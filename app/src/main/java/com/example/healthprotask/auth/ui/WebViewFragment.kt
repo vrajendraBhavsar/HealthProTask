@@ -2,6 +2,7 @@ package com.example.healthprotask.auth.ui
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -31,7 +32,7 @@ class WebViewFragment : Fragment() {
     lateinit var binding: FragmentWebVeiwBinding
     private val TAG = "HEALTHPROTEST"
     private val url = "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity"
-    private var htmlContent = ""
+//    private var htmlContent = ""
 
     var redirect: Boolean = false
     var completelyLoaded: Boolean = true   //when page is loaded completely ..it will be true
@@ -85,7 +86,7 @@ class WebViewFragment : Fragment() {
 //                    htmlContent = convertToString(`is`)
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading1: $url")
-                Log.d(TAG, "htmlContent: $htmlContent")
+//                Log.d(TAG, "htmlContent: $htmlContent")
                 return true
             }
 
@@ -102,7 +103,7 @@ class WebViewFragment : Fragment() {
                     settings.javaScriptEnabled = true
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading2: ${request?.url}")
-                Log.d(TAG, "htmlContent: $htmlContent")
+//                Log.d(TAG, "htmlContent: $htmlContent")
                  return super.shouldOverrideUrlLoading(view, request)
 
 //                return if(request?.url?.lastPathSegment == "error.html") {
@@ -152,6 +153,9 @@ class WebViewFragment : Fragment() {
 //                            binding.progressbar.visibility = View.GONE
 //                        }
 //                        fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()
+                        val uri: Uri = Uri.parse(url)
+                        val code: String? = uri.getQueryParameter("code")
+                        Log.d(TAG, "onPageFinished: code = $code")
                     }
                 }
                 else{
