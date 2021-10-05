@@ -25,14 +25,23 @@ class AuthActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val webView = WebView(this)
-        if (webView.canGoBack()) {
-            webView.goBack()
-        }
-        else {
+        val count = supportFragmentManager.backStackEntryCount
+        if (count == 0) {
             super.onBackPressed()
+        } else {
+            supportFragmentManager.popBackStack()
         }
     }
+
+//    override fun onBackPressed() {
+//        val webView = WebView(this)
+//        if (webView.canGoBack()) {
+//            webView.goBack()
+//        }
+//        else {
+//            super.onBackPressed()
+//        }
+//    }
 
 //    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
 //        val webView = WebView(this)

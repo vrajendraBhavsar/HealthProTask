@@ -142,7 +142,6 @@ class WebViewFragment : Fragment() {
                     Log.d(TAG, "onPageFinished: $completelyLoaded")
                     if (!url.isNullOrEmpty()){
                         Log.d(TAG, "onPageFinished: url link : $url")
-
 //                        Handler().postDelayed({
 //                            binding.progressbar.visibility = View.GONE
 //                        }, 3000)

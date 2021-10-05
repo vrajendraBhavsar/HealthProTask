@@ -3,12 +3,10 @@ package com.example.healthproclienttask.auth.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.healthprotask.R
 import com.example.healthprotask.auth.ui.WebViewFragment
@@ -50,8 +48,9 @@ class LoginFragment : Fragment() {
 //                Toast.makeText(requireContext(), "Couldn't get token..", Toast.LENGTH_SHORT).show()
 //            }
      //3
-            childFragmentManager.beginTransaction()
-                .replace(binding.childFragmentContainer.id, WebViewFragment.newInstance())
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.container, WebViewFragment.newInstance())
+                .addToBackStack("WebViewFragment")
                 .commit()
         }
     }
@@ -61,4 +60,12 @@ class LoginFragment : Fragment() {
         intent.data = Uri.parse(url)
         startActivity(intent)
     }
+
+//    fun onBackPressed() {
+//        if (requireFragmentManager().backStackEntryCount > 0) {
+//            requireFragmentManager().popBackStack()
+//        } else {
+//            super.onBackPressed()
+//        }
+//    }
 }
