@@ -1,7 +1,5 @@
 package com.example.healthproclienttask.auth.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.healthprotask.R
+import com.example.healthprotask.auth.ui.AuthViewModel
 import com.example.healthprotask.auth.ui.WebViewFragment
 import com.example.healthprotask.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,8 +19,6 @@ import java.util.*
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
     val TAG = LoginFragment::class.java.simpleName
-
-    val authViewModel by viewModels<AuthViewModel>() //vm
 
     companion object{
         fun newInstance() = LoginFragment()

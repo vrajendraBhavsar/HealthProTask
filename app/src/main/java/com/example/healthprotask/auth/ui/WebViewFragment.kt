@@ -14,12 +14,18 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.healthproclienttask.auth.ui.LoginFragment
 import com.example.healthproclienttask.utility.NetworkUtility
-import com.example.healthprotask.R
+import com.example.healthprotask.auth.model.AccessTokenRequestResponse
+import com.example.healthprotask.auth.model.ResultData
 import com.example.healthprotask.databinding.FragmentWebVeiwBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
 import java.io.UnsupportedEncodingException
 
+@AndroidEntryPoint
 class WebViewFragment : Fragment() {
     lateinit var binding: FragmentWebVeiwBinding
     private val TAG = WebViewFragment::class.java.simpleName
@@ -29,10 +35,13 @@ class WebViewFragment : Fragment() {
     var redirect: Boolean = false
     var completelyLoaded: Boolean = true   //when page is loaded completely ..it will be true
 
+    private val authViewModel by viewModels<AuthViewModel>() //vm
+
     companion object {
         fun newInstance() = WebViewFragment()
         const val REQUEST_KEY = "request_key"
         const val DATA_KEY = "data_key"
+        const val GRANT_TYPE = "authorization_code"
     }
 
     override fun onCreateView(
@@ -45,6 +54,7 @@ class WebViewFragment : Fragment() {
         return binding.root
     }
 
+    @DelicateCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -132,6 +142,40 @@ class WebViewFragment : Fragment() {
 
                             val base64 = getBase64("${NetworkUtility.Client_ID}:${NetworkUtility.Client_SECRET}")
                             Log.d(TAG, "getBase64: $base64")
+                            val authorizationString = "Basic $base64"
+
+                            //making Token api req
+                            if (code != null) {
+                                authViewModel.requestToken(
+                                    authorization = authorizationString,
+                                    clientId = NetworkUtility.Client_ID,
+                                    grantType = GRANT_TYPE,
+                                    redirectUri = NetworkUtility.REDIRECT_URL,
+                                    code = code
+                                )
+                            }else {
+                                Log.d(TAG, "onPageFinished: code is empty")
+                            }
+                            authViewModel.accessTokenRequestResponseLiveData.observe(viewLifecycleOwner, Observer { resultData ->
+                                when (resultData) {
+                                    is ResultData.Loading -> {
+                                    }
+                                    is ResultData.Success -> {
+                                        val accessTokenRequestResponse: AccessTokenRequestResponse? = resultData.data
+                                        Log.d(TAG, "onPageFinished: ${accessTokenRequestResponse.toString()}")
+                                        //retrieve access-token and refresh-tocken from response
+                                        val accessToken = accessTokenRequestResponse?.access_token
+                                        val refreshToken = accessTokenRequestResponse?.refresh_token
+
+
+                                    }
+                                    is ResultData.Failed -> {
+                                        Log.d(TAG, "onPageFinished: Api call failed")
+                                    }
+                                    is ResultData.Exception -> {
+                                    }
+                                }
+                            })
                         }
                     }
                 } else {
@@ -152,7 +196,7 @@ class WebViewFragment : Fragment() {
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         } finally {
-            return Base64.encodeToString(data, Base64.DEFAULT)
+            return Base64.encodeToString(data, Base64.NO_WRAP)
         }
     }
 }

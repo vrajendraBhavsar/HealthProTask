@@ -1,6 +1,6 @@
 package com.example.retrofit_hilt.di
 
-import com.example.healthproclienttask.auth.nework.AuthApiService
+import com.example.healthprotask.auth.nework.AuthApiService
 import com.example.healthproclienttask.utility.NetworkUtility
 import dagger.Module
 import dagger.Provides

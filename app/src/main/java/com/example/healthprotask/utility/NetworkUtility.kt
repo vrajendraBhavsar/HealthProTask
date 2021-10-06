@@ -3,14 +3,17 @@ package com.example.healthproclienttask.utility
 import android.media.session.MediaSession
 //http://www.fitbit.com/oauth/authorize?oauth_token=%s
 //https://www.fitbit.com/oauth2/authorize
+//https://api.fitbit.com/1/user/-/profile.json
 object NetworkUtility {
-    const val BASE_URL = "https://www.fitbit.com/oauth2/"
+    const val BASE_URL = "https://api.fitbit.com/"
     const val AUTHORIZATION_URL = "authorize?oauth_token=%s"
+    const val TOKEN_URL = "oauth2/token"
     const val REQUEST_TOKEN_URL = "request_token"
     const val ACCESS_TOKEN_URL = "access_token"
 
     const val Client_ID = "23BKYF"
     const val Client_SECRET = "18e4ce49090198ccda31336db7914e2f"
+    const val REDIRECT_URL = "https://www.mindinventory.com/"
 
 //    fun getRequestTokenEndpoint(): String? {
 //        return "http://api.fitbit.com/oauth/request_token"
