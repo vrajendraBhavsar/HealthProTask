@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,18 +15,14 @@ import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.example.healthproclienttask.auth.ui.LoginFragment
+import com.example.healthproclienttask.utility.NetworkUtility
+import com.example.healthprotask.R
 import com.example.healthprotask.databinding.FragmentWebVeiwBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
+import java.io.UnsupportedEncodingException
 
 class WebViewFragment : Fragment() {
     lateinit var binding: FragmentWebVeiwBinding
-    private val TAG = "HEALTHPROTEST"
+    private val TAG = WebViewFragment::class.java.simpleName
     private val url =
         "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity"
 
@@ -54,11 +51,7 @@ class WebViewFragment : Fragment() {
         val requestKey = arguments?.getString(REQUEST_KEY, null)
         Log.d(TAG, "onViewCreated: requestKey: $requestKey")
         if (LoginFragment.requestKey.isNullOrEmpty()) {
-//            GlobalScope.launch {
-//                            Thread.sleep(3000)
-//                            binding.progressbar.visibility = View.GONE
-//                        }
-//            fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()
+            //fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()//back to parent fragment
             return
         }
         //....
@@ -90,26 +83,13 @@ class WebViewFragment : Fragment() {
                 }
                 completelyLoaded = false
                 //loading url
-
                 view?.apply {
                     url?.let { loadUrl(it) }
                     settings.javaScriptEnabled = true
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading2: ${request?.url}")
-                return super.shouldOverrideUrlLoading(view, request)
-            }
 
-            fun convertToString(inputStream: InputStream?): String {
-                val string = StringBuffer()
-                val reader = BufferedReader(InputStreamReader(inputStream))
-                var line: String?
-                try {
-                    while (reader.readLine().also { line = it } != null) {
-                        string.append(line.toString() + "\n")
-                    }
-                } catch (e: IOException) {
-                }
-                return string.toString()
+                return super.shouldOverrideUrlLoading(view, request)
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -139,11 +119,19 @@ class WebViewFragment : Fragment() {
                                     putString(DATA_KEY, code)
                                 }
                             )
-//                            GlobalScope.launch {
-//                                Thread.sleep(3000)
-//                                binding.progressbar.visibility = View.GONE
+                            //To Go back to parent activity
+//                            if (code != null) {
+//                                //1. back to Login Fragment
+////                            fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()//back to parent fragment
+//                                //2.
+//                                requireActivity().supportFragmentManager.beginTransaction()
+//                                    .add(R.id.container, LoginFragment.newInstance())
+////                                .addToBackStack("LoginFragment")
+//                                    .commit()
 //                            }
-//                            fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()//back to parent fragment
+
+                            val base64 = getBase64("${NetworkUtility.Client_ID}:${NetworkUtility.Client_SECRET}")
+                            Log.d(TAG, "getBase64: $base64")
                         }
                     }
                 } else {
@@ -155,5 +143,16 @@ class WebViewFragment : Fragment() {
         binding.wbWebView.settings.userAgentString =
             "Chrome/94.0.4606.71 Mobile"   //to avoid possible errors from occurring in latest versions
         binding.wbWebView.loadUrl(url)
+    }
+
+    private fun getBase64(s: String): String? {
+        var data = ByteArray(0)
+        try {
+            data = s.toByteArray(charset("UTF-8"))
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+        } finally {
+            return Base64.encodeToString(data, Base64.DEFAULT)
+        }
     }
 }

@@ -19,7 +19,7 @@ import java.util.*
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
-    val TAG = "HEALTHPROTEST"
+    val TAG = LoginFragment::class.java.simpleName
 
     val authViewModel by viewModels<AuthViewModel>() //vm
 
@@ -30,12 +30,6 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        childFragmentManager.setFragmentResultListener(requestKey, this){ _, bundle ->
-            val code = bundle
-            Log.d(TAG, "onViewCreated: bundle code: $code")
-            Toast.makeText(requireContext(), "code : $code", Toast.LENGTH_LONG).show()
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,6 +40,12 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentLoginBinding.bind(view)
+
+        childFragmentManager.setFragmentResultListener(requestKey, this){ _, bundle ->
+            val code = bundle.getString(WebViewFragment.DATA_KEY, "Unknown")
+            Log.d(TAG, "onViewCreated: bundle code: $code")
+            Toast.makeText(requireContext(), "code : $code", Toast.LENGTH_LONG).show()
+        }
 
         binding.btnAuth.setOnClickListener {
             val webViewFragment = WebViewFragment.newInstance()
