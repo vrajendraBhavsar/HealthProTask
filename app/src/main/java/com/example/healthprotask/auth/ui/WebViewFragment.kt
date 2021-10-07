@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ import androidx.lifecycle.Observer
 import com.example.healthproclienttask.auth.ui.LoginFragment
 import com.example.healthproclienttask.utility.NetworkUtility
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
+import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.ResultData
 import com.example.healthprotask.databinding.FragmentWebVeiwBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +32,8 @@ class WebViewFragment : Fragment() {
     lateinit var binding: FragmentWebVeiwBinding
     private val TAG = WebViewFragment::class.java.simpleName
     private val url =
-        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity"
+//        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity"
+"https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
 
     var redirect: Boolean = false
     var completelyLoaded: Boolean = true   //when page is loaded completely ..it will be true
@@ -42,6 +45,7 @@ class WebViewFragment : Fragment() {
         const val REQUEST_KEY = "request_key"
         const val DATA_KEY = "data_key"
         const val GRANT_TYPE = "authorization_code"
+        const val REFRESH_GRANT_TYPE = "refresh_token"
     }
 
     override fun onCreateView(
@@ -64,6 +68,10 @@ class WebViewFragment : Fragment() {
             //fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()//back to parent fragment
             return
         }
+        //...
+        authViewModel.userProfileResponseLiveData.observe(viewLifecycleOwner, ::handleUserProfile)
+        authViewModel.accessTokenRequestResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRequest)
+        authViewModel.accessTokenRefreshResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRefresh)
         //....
         binding.wbWebView.webViewClient = object : WebViewClient() {
             @SuppressLint("SetJavaScriptEnabled")
@@ -88,6 +96,7 @@ class WebViewFragment : Fragment() {
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
+                Log.d(TAG, "shouldOverrideUrlLoading: started")
                 if (!completelyLoaded) {
                     redirect = true
                 }
@@ -98,19 +107,22 @@ class WebViewFragment : Fragment() {
                     settings.javaScriptEnabled = true
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading2: ${request?.url}")
-
+                Log.d(TAG, "shouldOverrideUrlLoading2: ended")
                 return super.shouldOverrideUrlLoading(view, request)
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
+                Log.d(TAG, "onPageStarted: started")
                 completelyLoaded = false
                 binding.progressbar.visibility = View.VISIBLE   //while loading data..its visible
-                Log.d(TAG, "onPageStarted: $completelyLoaded")
+//                Log.d(TAG, "onPageStarted: $completelyLoaded")
+                Log.d(TAG, "onPageStarted: ended")
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                Log.d(TAG, "onPageFinished: started")
                 if (!redirect) {
                     completelyLoaded = true
                 }
@@ -143,7 +155,7 @@ class WebViewFragment : Fragment() {
                             val base64 = getBase64("${NetworkUtility.Client_ID}:${NetworkUtility.Client_SECRET}")
                             Log.d(TAG, "getBase64: $base64")
                             val authorizationString = "Basic $base64"
-
+                            Log.d(TAG, "authoriaztion String ..Basic XOXO : $authorizationString")
                             //making Token api req
                             if (code != null) {
                                 authViewModel.requestToken(
@@ -157,30 +169,66 @@ class WebViewFragment : Fragment() {
                                 Log.d(TAG, "onPageFinished: code is empty")
                             }
                             authViewModel.accessTokenRequestResponseLiveData.observe(viewLifecycleOwner, Observer { resultData ->
-                                when (resultData) {
-                                    is ResultData.Loading -> {
-                                    }
-                                    is ResultData.Success -> {
-                                        val accessTokenRequestResponse: AccessTokenRequestResponse? = resultData.data
-                                        Log.d(TAG, "onPageFinished: ${accessTokenRequestResponse.toString()}")
-                                        //retrieve access-token and refresh-tocken from response
-                                        val accessToken = accessTokenRequestResponse?.access_token
-                                        val refreshToken = accessTokenRequestResponse?.refresh_token
-
-
-                                    }
-                                    is ResultData.Failed -> {
-                                        Log.d(TAG, "onPageFinished: Api call failed")
-                                    }
-                                    is ResultData.Exception -> {
-                                    }
-                                }
+//                                var profileResponsee: ProfileResponse? = null
+//                                when (resultData) {
+//                                    is ResultData.Loading -> {
+//                                    }
+//                                    is ResultData.Success -> {
+//                                        val accessTokenRequestResponse: AccessTokenRequestResponse? = resultData.data
+//                                        Log.d(TAG, "ResultData.Success: ${accessTokenRequestResponse.toString()}")
+//                                        //retrieve access-token and refresh-token from response
+//                                        val accessToken = accessTokenRequestResponse?.access_token
+//                                        val refreshToken = accessTokenRequestResponse?.refresh_token
+//                                        Log.d(TAG, "accessToken: $accessToken")
+//                                        Log.d(TAG, "refreshToken: $refreshToken")
+////                                        val userProfileResponse: ProfileResponse? = accessToken?.let { getUserProfile(it) }
+//
+////                                        val bearerToken = "Bearer $accessToken"
+//                                        val bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNjMzNjM1NjgyLCJpYXQiOjE2MzM2MDY4ODJ9.plmCeTX0d9IerKz7pXAKM13DeVIUiUl03W6zqlvhEwg"
+//                                        Log.d(TAG, "bearerToken: $bearerToken")
+//                                        if (bearerToken.isNotEmpty()){
+//                                            authViewModel.getUserProfile(bearerToken = bearerToken)
+//                                        }
+//
+//                                        //when accessTokenRequestResponse is failed and need to refresh access token ,use Refresh token
+//                                        if (profileResponsee?.success == false){
+//                                            if (refreshToken != null) {
+//                                                authViewModel.refreshToken(
+//                                                    authorization = bearerToken,
+//                                                    grantType = REFRESH_GRANT_TYPE,
+//                                                    refreshToken = refreshToken
+//                                                )
+//                                            }
+////                                            authViewModel.accessTokenRefreshResponseLiveData.observe(viewLifecycleOwner, Observer { refreshedResultData ->
+////                                                when(refreshedResultData) {
+////                                                    is ResultData.Success -> {
+////                                                        val tokenRefreshResponse : AccessTokenRequestResponse? = refreshedResultData.data
+////                                                        val bearerToken = "Bearer ${tokenRefreshResponse?.access_token}"
+////                                                        //user profile api call
+//////                                                        getUserProfile(bearerToken)
+////                                                    }
+////                                                    is ResultData.Failed -> {
+////                                                        refreshedResultData.message
+////                                                    }
+////                                                    is ResultData.Exception -> {}
+////                                                    is ResultData.Loading -> {}
+////                                                }
+////                                            })
+//                                        }
+//                                    }
+//                                    is ResultData.Failed -> {
+//                                        Log.d(TAG, "ResultData.Failed: ${resultData.message}")
+//                                    }
+//                                    is ResultData.Exception -> {
+//                                    }
+//                                }
                             })
                         }
                     }
                 } else {
                     redirect = false
                 }
+                Log.d(TAG, "onPageFinished: finished")
             }
         }
         //Mention chrome latest version...
@@ -189,13 +237,95 @@ class WebViewFragment : Fragment() {
         binding.wbWebView.loadUrl(url)
     }
 
+    private fun handleAccessTokenRefresh(resultData: ResultData<AccessTokenRequestResponse>?) {
+        when(resultData) {
+            is ResultData.Success -> {
+                val tokenRefreshResponse : AccessTokenRequestResponse? = resultData.data
+                val bearerToken = "Bearer ${tokenRefreshResponse?.access_token}"
+                //user profile api call
+//              getUserProfile(bearerToken)
+            }
+            is ResultData.Failed -> {
+                resultData.message
+            }
+            is ResultData.Exception -> {}
+            is ResultData.Loading -> {}
+        }
+    }
+
+    private fun handleAccessTokenRequest(resultData: ResultData<AccessTokenRequestResponse>?) {
+        var profileResponsee: ProfileResponse? = null
+        when (resultData) {
+            is ResultData.Loading -> {
+            }
+            is ResultData.Success -> {
+                val accessTokenRequestResponse: AccessTokenRequestResponse? = resultData.data
+                Log.d(TAG, "ResultData.Success: ${accessTokenRequestResponse.toString()}")
+                //retrieve access-token and refresh-token from response
+                val accessToken = accessTokenRequestResponse?.access_token
+                val refreshToken = accessTokenRequestResponse?.refresh_token
+                Log.d(TAG, "accessToken: $accessToken")
+                Log.d(TAG, "refreshToken: $refreshToken")
+//                                        val userProfileResponse: ProfileResponse? = accessToken?.let { getUserProfile(it) }
+//                                        val bearerToken = "Bearer $accessToken"
+                val bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNjMzNjM1NjgyLCJpYXQiOjE2MzM2MDY4ODJ9.plmCeTX0d9IerKz7pXAKM13DeVIUiUl03W6zqlvhEwg"
+                Log.d(TAG, "bearerToken: $bearerToken")
+                if (bearerToken.isNotEmpty()){
+                    authViewModel.getUserProfile(bearerToken = bearerToken)
+                }
+
+                //when accessTokenRequestResponse is failed and need to refresh access token ,use Refresh token
+                if (profileResponsee?.success == false){
+                    if (refreshToken != null) {
+                        authViewModel.refreshToken(
+                            authorization = bearerToken,
+                            grantType = REFRESH_GRANT_TYPE,
+                            refreshToken = refreshToken
+                        )
+                    }
+                }
+            }
+            is ResultData.Failed -> {
+                Log.d(TAG, "ResultData.Failed: ${resultData.message}")
+            }
+            is ResultData.Exception -> {
+            }
+        }
+    }
+
+    private fun handleUserProfile(profileResponse: ProfileResponse?) {
+        Toast.makeText(requireContext(), "User Data : ${profileResponse.toString()}", Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "onPageFinished: userProfileData : ${profileResponse.toString()}")
+    }
+
+    /*private fun getUserProfile(accessToken: String): ProfileResponse? {
+        Log.d(TAG, "getUserProfile: started")
+        var profileResponseVar: ProfileResponse? = null
+        //making Profile api req
+        val bearerToken = "Bearer $accessToken"
+        //val bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJzZXQgcmFjdCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNjMzNTQ5OTc2LCJpYXQiOjE2MzM1MjExNzZ9.3g0rWW39QlZ8Lq_owLEPPqd_jxKqGIrF4ltao15xe84"
+
+        if (bearerToken.isNotEmpty()){
+//            authViewModel.getUserProfile(bearerToken = bearerToken)
+            authViewModel.userProfileResponseLiveData.observe(viewLifecycleOwner, Observer { profileResponse ->
+                profileResponseVar = profileResponse
+                Toast.makeText(requireContext(), "User Data : ${profileResponseVar.toString()}", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "onPageFinished: userProfileData : ${profileResponseVar.toString()}")
+            })
+        }
+        Log.d(TAG, "getUserProfile: finished")
+        return profileResponseVar
+    }*/
+
     private fun getBase64(s: String): String? {
+        Log.d(TAG, "getBase64: started")
         var data = ByteArray(0)
         try {
             data = s.toByteArray(charset("UTF-8"))
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         } finally {
+            Log.d(TAG, "getBase64: ended")
             return Base64.encodeToString(data, Base64.NO_WRAP)
         }
     }
