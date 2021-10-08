@@ -24,7 +24,7 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
     val TAG = AuthViewModel::class.java.simpleName
     
-    //Backing pattern
+    //Backing property
     private val _accessTokenRequestResponseLiveData = MutableLiveData<ResultData<AccessTokenRequestResponse>>()
     val accessTokenRequestResponseLiveData: LiveData<ResultData<AccessTokenRequestResponse>> = _accessTokenRequestResponseLiveData
 
