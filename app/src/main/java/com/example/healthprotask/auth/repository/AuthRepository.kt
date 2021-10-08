@@ -16,10 +16,11 @@ class AuthRepository @Inject constructor(private val authApiService: AuthApiServ
         clientId: String,
         grantType: String,
         redirectUri: String,
-        code: String
+        code: String,
+        codeVerifier: String
     ): AccessTokenRequestResponse {
         Log.d(TAG, "requestToken: ")
-        return authApiService.requestToken(authorization, clientId, grantType, redirectUri, code)
+        return authApiService.requestToken(authorization, clientId, grantType, redirectUri, code, codeVerifier)
     }
 
     suspend fun getUserProfile(

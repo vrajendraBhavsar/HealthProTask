@@ -17,7 +17,8 @@ class AuthUseCase @Inject constructor(private val authRepository: AuthRepository
         val clientId: String,
         val grantType: String,
         val redirectUri: String,
-        val code: String
+        val code: String,
+        val codeVerifier: String
     )
 
     override suspend fun execute(param: Param): AccessTokenRequestResponse {
@@ -28,7 +29,8 @@ class AuthUseCase @Inject constructor(private val authRepository: AuthRepository
                 param.clientId,
                 param.grantType,
                 param.redirectUri,
-                param.code
+                param.code,
+                param.codeVerifier
             )
         }
     }

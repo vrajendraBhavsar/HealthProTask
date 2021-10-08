@@ -14,7 +14,8 @@ interface AuthApiService {//application/x-www-form-urlencoded
         @Field("clientId") clientId: String,
         @Field("grant_type") grantType: String,
         @Field("redirect_uri") redirectUri: String,
-        @Field("code") code: String
+        @Field("code") code: String,
+        @Field("code_verifier") codeVerifier: String
     ): AccessTokenRequestResponse
 
     @GET(NetworkUtility.USER_PROFILE)

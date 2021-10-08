@@ -42,11 +42,12 @@ class AuthViewModel @Inject constructor(
         clientId: String,
         grantType: String,
         redirectUri: String,
-        code: String
+        code: String,
+        codeVerifier: String
     ) {
         Log.d(TAG, "requestToken: started")
         viewModelScope.launch {
-            val accessTokenRequestResponse = authUseCase.execute(AuthUseCase.Param(authorization, clientId, grantType, redirectUri, code))
+            val accessTokenRequestResponse = authUseCase.execute(AuthUseCase.Param(authorization, clientId, grantType, redirectUri, code, codeVerifier))
             if (accessTokenRequestResponse.access_token?.isNotEmpty() == true) {
                 _accessTokenRequestResponseLiveData.value = ResultData.Success(accessTokenRequestResponse)
             } else {
