@@ -1,4 +1,4 @@
-package com.example.healthproclienttask.auth.ui
+package com.example.healthprotask.auth.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -7,10 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
 import com.example.healthprotask.R
-import com.example.healthprotask.auth.ui.AuthViewModel
-import com.example.healthprotask.auth.ui.WebViewFragment
 import com.example.healthprotask.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*

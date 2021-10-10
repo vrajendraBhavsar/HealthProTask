@@ -9,6 +9,7 @@ object NetworkUtility {
     const val AUTHORIZATION_URL = "authorize?oauth_token=%s"
     const val TOKEN_URL = "oauth2/token"
     const val USER_PROFILE = "1/user/-/profile.json"
+    const val USER_ACTIVITIES = "1/user/-/activities.json"
     const val REQUEST_TOKEN_URL = "request_token"
     const val ACCESS_TOKEN_URL = "access_token"
 

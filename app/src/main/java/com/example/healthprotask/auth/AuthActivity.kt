@@ -2,9 +2,7 @@ package com.example.healthprotask.auth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.KeyEvent
-import android.webkit.WebView
-import com.example.healthproclienttask.auth.ui.LoginFragment
+import com.example.healthprotask.auth.ui.LoginFragment
 import com.example.healthprotask.databinding.ActivityAuthBinding
 import dagger.hilt.android.AndroidEntryPoint
 

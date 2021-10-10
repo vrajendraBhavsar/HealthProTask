@@ -16,12 +16,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import com.example.healthproclienttask.auth.ui.LoginFragment
 import com.example.healthproclienttask.utility.NetworkUtility
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.ResultData
+import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.databinding.FragmentWebVeiwBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -74,6 +73,7 @@ class WebViewFragment : Fragment() {
         authViewModel.userProfileResponseLiveData.observe(viewLifecycleOwner, ::handleUserProfile)
         authViewModel.accessTokenRequestResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRequest)
         authViewModel.accessTokenRefreshResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRefresh)
+        authViewModel.userActivitiesResponseLiveData.observe(viewLifecycleOwner, ::handleUserActivity)
         //....
         binding.wbWebView.webViewClient = object : WebViewClient() {
             @SuppressLint("SetJavaScriptEnabled")
@@ -186,6 +186,11 @@ class WebViewFragment : Fragment() {
         binding.wbWebView.loadUrl(url)
     }
 
+    private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
+        Toast.makeText(requireContext(), "User Data : ${userActivitiesResponse.toString()}", Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "onPageFinished: userProfileData : ${userActivitiesResponse.toString()}")
+    }
+
     private fun handleAccessTokenRefresh(resultData: ResultData<AccessTokenRequestResponse>?) {
         when(resultData) {
             is ResultData.Success -> {
@@ -219,15 +224,15 @@ class WebViewFragment : Fragment() {
                 Log.d(TAG, "refreshToken: $refreshToken")
 //              val userProfileResponse: ProfileResponse? = accessToken?.let { getUserProfile(it) } //to use comman fun for user api call
 
-//              val bearerToken = "Bearer $accessToken"
-                bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNjMzNjM1NjgyLCJpYXQiOjE2MzM2MDY4ODJ9.plmCeTX0d9IerKz7pXAKM13DeVIUiUl03W6zqlvhEwg"
+                val bearerToken = "Bearer $accessToken"
+//                bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNjMzNjM1NjgyLCJpYXQiOjE2MzM2MDY4ODJ9.plmCeTX0d9IerKz7pXAKM13DeVIUiUl03W6zqlvhEwg"
                 Log.d(TAG, "bearerToken: $bearerToken")
 
                     /**
                      *  Refresh token api
                      **/
                 bearerToken?.let { bearerToken ->
-                    authViewModel.getUserProfile(bearerToken = bearerToken)
+                    authViewModel.getUserActivities(bearerToken = bearerToken)
                 }
             }
             is ResultData.Failed -> {
