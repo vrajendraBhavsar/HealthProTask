@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,23 +15,13 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.example.healthproclienttask.auth.ui.LoginFragment
-import com.example.healthproclienttask.utility.NetworkUtility
-import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
-import com.example.healthprotask.auth.model.ResultData
+import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.databinding.FragmentWebVeiwBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
-import java.io.UnsupportedEncodingException
-import java.net.URI
-import java.net.URISyntaxException
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.util.Base64.getUrlEncoder
 
 @AndroidEntryPoint
 class WebViewFragment : Fragment() {
@@ -43,11 +32,10 @@ class WebViewFragment : Fragment() {
 //    private val url =
 ////        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity"
 //"https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
-
-
 //    private val url: String = "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&code_challenge_method=S256&scope=activity%20nutrition%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight"
-//implicit grant flow -> we will directly get access_token
-    private val url: String = "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23BKYF&redirect_uri=https://www.mindinventory.com/&scope=activity%20nutrition%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800\n"
+
+    //implicit grant flow -> we will directly get access_token
+    private val url: String = "https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=23BKYF&redirect_uri=https://www.mindinventory.com/&scope=activity%20nutrition%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
     var redirect: Boolean = false
     var completelyLoaded: Boolean = true   //when page is loaded completely ..it will be true
 
@@ -74,15 +62,8 @@ class WebViewFragment : Fragment() {
     @DelicateCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val requestKey = arguments?.getString(REQUEST_KEY, null)
-        Log.d(TAG, "onViewCreated: requestKey: $requestKey")
-        if (LoginFragment.requestKey.isNullOrEmpty()) {
-            //fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()//back to parent fragment
-            return
-        }
         //...method reference
-        authViewModel.userProfileResponseLiveData.observe(viewLifecycleOwner, ::handleUserProfile)
+        authViewModel.userActivitiesResponseLiveData.observe(viewLifecycleOwner, ::handleUserActivities)
 //        authViewModel.accessTokenRequestResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRequest)
 //        authViewModel.accessTokenRefreshResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRefresh)
         //....
@@ -140,16 +121,18 @@ class WebViewFragment : Fragment() {
                     Log.d(TAG, "onPageFinished: $completelyLoaded")
                     if (!url.isNullOrEmpty()) {
                         Log.d(TAG, "onPageFinished: url link : $url")
-                        val uri: Uri = Uri.parse(url)
-                        val accessToken: String? = uri.getQueryParameter("access_token")
-                        Log.d(TAG, "onPageFinished: access_token = $accessToken")
 
-                        //Bearer token
-                        bearerToken = "Bearer $accessToken"
-                        
+                            val uri: Uri = Uri.parse(url)
+                            val accessToken: String? = uri.getQueryParameter("token")
+                            Log.d(TAG, "onPageFinished: access_token = $accessToken")
+
+                            //Bearer token
+                            bearerToken = "Bearer $accessToken"
+//                            bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3YWN0IiwiZXhwIjoxNjM0NDcxNDQzLCJpYXQiOjE2MzM4NjY2NDN9.i0vnsriJov-UFdxcdW-ouS-6r1NCMKq_apNs11KTHWg"
+
                         bearerToken?.let { bearerToken ->
                             Log.d(TAG, "onPageFinished: Bearer token = $bearerToken")
-                            authViewModel.getUserProfile(bearerToken = bearerToken)
+                            authViewModel.getUserActivities(bearerToken = bearerToken)
                         }
                     }
                 } else {
@@ -162,6 +145,11 @@ class WebViewFragment : Fragment() {
         binding.wbWebView.settings.userAgentString = "Chrome/94.0.4606.71 Mobile"   //to avoid possible errors from occurring in latest versions
         //loading url
         binding.wbWebView.loadUrl(url)
+    }
+
+    private fun handleUserActivities(userActivitiesResponse: UserActivitiesResponse?) {
+        Toast.makeText(requireContext(), "User Data : ${userActivitiesResponse.toString()}", Toast.LENGTH_LONG).show()
+        Log.d(TAG, "onPageFinished: UserData : ${userActivitiesResponse.toString()}")
     }
 
     @DelicateCoroutinesApi

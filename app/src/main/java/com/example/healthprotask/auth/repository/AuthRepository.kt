@@ -3,6 +3,7 @@ package com.example.healthprotask.auth.repository
 import android.util.Log
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
+import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.auth.nework.AuthApiService
 import retrofit2.http.Field
 import retrofit2.http.Header
@@ -23,11 +24,11 @@ class AuthRepository @Inject constructor(private val authApiService: AuthApiServ
         return authApiService.requestToken(authorization, clientId, grantType, redirectUri, code, codeVerifier)
     }
 
-    suspend fun getUserProfile(
+    suspend fun getUserActivities(
         bearerToken: String
-    ): ProfileResponse {
+    ): UserActivitiesResponse {
         Log.d(TAG, "getUserProfile: ")
-        return authApiService.getUserProfile(bearerToken)
+        return authApiService.getUserActivities(bearerToken)
     }
 
     suspend fun refreshToken(

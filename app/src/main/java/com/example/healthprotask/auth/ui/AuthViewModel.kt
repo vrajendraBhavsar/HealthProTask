@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
-import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.ResultData
+import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.auth.usecase.AuthUseCase
 import com.example.healthprotask.auth.usecase.ProfileUseCase
 import com.example.healthprotask.auth.usecase.RefreshTokenUseCase
@@ -28,8 +28,8 @@ class AuthViewModel @Inject constructor(
     private val _accessTokenRequestResponseLiveData = MutableLiveData<ResultData<AccessTokenRequestResponse>>()
     val accessTokenRequestResponseLiveData: LiveData<ResultData<AccessTokenRequestResponse>> = _accessTokenRequestResponseLiveData
 
-    private val _userProfileResponseLiveData = MutableLiveData<ProfileResponse>()
-    val userProfileResponseLiveData: LiveData<ProfileResponse> = _userProfileResponseLiveData
+    private val _userActivitiesResponseLiveData = MutableLiveData<UserActivitiesResponse>()
+    val userActivitiesResponseLiveData: LiveData<UserActivitiesResponse> = _userActivitiesResponseLiveData
 
     private val _accessTokenRefreshResponseLiveData = MutableLiveData<ResultData<AccessTokenRequestResponse>>()
     val accessTokenRefreshResponseLiveData: LiveData<ResultData<AccessTokenRequestResponse>> = _accessTokenRefreshResponseLiveData
@@ -57,15 +57,12 @@ class AuthViewModel @Inject constructor(
         Log.d(TAG, "requestToken: ended")
     }
 
-    fun getUserProfile(bearerToken: String) {
+    fun getUserActivities(bearerToken: String) {
         Log.d(TAG, "getUserProfile: started")
         viewModelScope.launch {
-            val userProfileResponse: ProfileResponse = profileUseCase.execute(ProfileUseCase.Param(bearerToken))
-
-            if (userProfileResponse.user.displayName?.isNotEmpty() == true) {
-                _userProfileResponseLiveData.value = userProfileResponse
+            val userProfileResponse: UserActivitiesResponse = profileUseCase.execute(ProfileUseCase.Param(bearerToken))
+                _userActivitiesResponseLiveData.value = userProfileResponse
             }
-        }
         Log.d(TAG, "getUserProfile: ended")
     }
 

@@ -3,6 +3,7 @@ package com.example.healthprotask.auth.nework
 import com.example.healthproclienttask.utility.NetworkUtility
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
+import com.example.healthprotask.auth.model.UserActivitiesResponse
 import retrofit2.http.*
 
 interface AuthApiService {//application/x-www-form-urlencoded
@@ -22,6 +23,11 @@ interface AuthApiService {//application/x-www-form-urlencoded
     suspend fun getUserProfile(
         @Header("Authorization") bearerToken: String
     ): ProfileResponse
+
+    @GET(NetworkUtility.USER_ACTIVITIES)
+    suspend fun getUserActivities(
+        @Header("Authorization") bearerToken: String
+    ): UserActivitiesResponse
 
     @FormUrlEncoded
     @POST(NetworkUtility.TOKEN_URL)
