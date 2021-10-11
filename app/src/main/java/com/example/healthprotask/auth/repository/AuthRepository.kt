@@ -31,10 +31,11 @@ class AuthRepository @Inject constructor(private val authApiService: AuthApiServ
     }
 
     suspend fun getUserActivities(
-        bearerToken: String
+        bearerToken: String,
+        date: String
     ): UserActivitiesResponse {
         Log.d(TAG, "getUserProfile: ")
-        return authApiService.getUserActivities(bearerToken)
+        return authApiService.getUserActivities(bearerToken, date)
     }
 
     suspend fun refreshToken(

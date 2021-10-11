@@ -25,9 +25,12 @@ import com.example.healthprotask.databinding.FragmentWebVeiwBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.io.UnsupportedEncodingException
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class WebViewFragment : Fragment() {
+    private var currentDay: String? = null
     private var bearerToken: String? = null
     private var refreshToken: String? = null
     lateinit var binding: FragmentWebVeiwBinding
@@ -209,6 +212,7 @@ class WebViewFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun handleAccessTokenRequest(resultData: ResultData<AccessTokenRequestResponse>?) {
         when (resultData) {
             is ResultData.Loading -> {
@@ -225,14 +229,17 @@ class WebViewFragment : Fragment() {
 //              val userProfileResponse: ProfileResponse? = accessToken?.let { getUserProfile(it) } //to use comman fun for user api call
 
                 val bearerToken = "Bearer $accessToken"
-//                bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNjMzNjM1NjgyLCJpYXQiOjE2MzM2MDY4ODJ9.plmCeTX0d9IerKz7pXAKM13DeVIUiUl03W6zqlvhEwg"
                 Log.d(TAG, "bearerToken: $bearerToken")
+                currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
+                Log.d(TAG, "handleAccessTokenRequest: currentDay : $currentDay")
 
                     /**
                      *  Refresh token api
                      **/
-                bearerToken?.let { bearerToken ->
-                    authViewModel.getUserActivities(bearerToken = bearerToken)
+                bearerToken.let { bearerToken ->
+                    currentDay?.let { date ->
+                        authViewModel.getUserActivities(bearerToken = bearerToken, date)
+                    }
                 }
             }
             is ResultData.Failed -> {

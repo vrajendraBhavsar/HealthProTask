@@ -14,13 +14,15 @@ class ActivitiesUseCase @Inject constructor(private val authRepository: AuthRepo
     
     data class Param(
         val bearerToken: String,
+        val date: String
     )
 
     override suspend fun execute(param: Param): UserActivitiesResponse {
         Log.d(TAG, "execute")
         return withContext(Dispatchers.IO) {
             authRepository.getUserActivities(
-                param.bearerToken
+                param.bearerToken,
+                param.date
             )
         }
     }

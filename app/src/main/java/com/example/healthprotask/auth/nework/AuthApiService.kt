@@ -5,6 +5,7 @@ import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.UserActivitiesResponse
 import retrofit2.http.*
+import java.util.*
 
 interface AuthApiService {//application/x-www-form-urlencoded
 
@@ -25,7 +26,8 @@ interface AuthApiService {//application/x-www-form-urlencoded
 
     @GET(NetworkUtility.USER_ACTIVITIES)
     suspend fun getUserActivities(
-        @Header("Authorization") bearerToken: String
+        @Header("Authorization") bearerToken: String,
+        @Path("Date") date: String
     ): UserActivitiesResponse
 
     @FormUrlEncoded

@@ -71,4 +71,8 @@ dependencies {
     implementation "br.com.simplepass:loading-button-android:1.14.0"
     //Material
     implementation "com.google.android.material:material:1.5.0-alpha04"
+    //
+    // For Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.5"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
 }
