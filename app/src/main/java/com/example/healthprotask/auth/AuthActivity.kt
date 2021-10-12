@@ -2,6 +2,8 @@ package com.example.healthprotask.auth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.fragment.NavHostFragment
+import com.example.healthprotask.R
 import com.example.healthprotask.auth.ui.LoginFragment
 import com.example.healthprotask.databinding.ActivityAuthBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,12 +16,18 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //1
+//        if (savedInstanceState == null){
+//            supportFragmentManager.beginTransaction()
+//                .replace(binding.container.id, LoginFragment.newInstance())
+//                .commit()
+//        }
+        //2
 
-        if (savedInstanceState == null){
-            supportFragmentManager.beginTransaction()
-                .replace(binding.container.id, LoginFragment.newInstance())
-                .commit()
-        }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+//        navController.navigate(R.id.loginFragment)
     }
 
     override fun onBackPressed() {

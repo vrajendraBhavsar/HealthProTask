@@ -7,7 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.healthprotask.R
+import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -28,18 +32,8 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        val view = inflater.inflate(R.layout.fragment_login, container, false)
         binding = FragmentLoginBinding.bind(view)
-
-        childFragmentManager.setFragmentResultListener(requestKey, this){ _, bundle ->
-            val code = bundle.getString(WebViewFragment.DATA_KEY, "Unknown")
-            Log.d(TAG, "onViewCreated: bundle code: $code")
-            Toast.makeText(requireContext(), "code : $code", Toast.LENGTH_LONG).show()
-        }
 
         binding.btnAuth.setOnClickListener {
             val webViewFragment = WebViewFragment.newInstance()
@@ -47,10 +41,30 @@ class LoginFragment : Fragment() {
             bundle.putString(WebViewFragment.REQUEST_KEY, requestKey) // bundle ma key set tari
             webViewFragment.arguments = bundle
 
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.container, webViewFragment)
-                .addToBackStack("WebViewFragment")
-                .commit()
+//            requireActivity().supportFragmentManager.beginTransaction()
+//                .replace(R.id.container, webViewFragment)
+//                .addToBackStack("WebViewFragment")
+//                .commit()
+
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_webViewFragment)
+        }
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        childFragmentManager.setFragmentResultListener(requestKey, this){ _, bundle ->
+            val code = bundle.getString(WebViewFragment.DATA_KEY, "Unknown")
+            Log.d(TAG, "onViewCreated: bundle code: $code")
+            Toast.makeText(requireContext(), "code : $code", Toast.LENGTH_LONG).show()
+
+            val navController = findNavController()
+            navController.currentBackStackEntry?.savedStateHandle?.getLiveData<UserActivitiesResponse>("userActivitiesResponse")
+                ?.observe(viewLifecycleOwner) { userActivities ->
+                    Toast.makeText(requireContext(), "userActivities: $userActivities", Toast.LENGTH_LONG).show()
+                }
         }
     }
 

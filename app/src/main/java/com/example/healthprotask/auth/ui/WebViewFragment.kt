@@ -21,7 +21,7 @@ import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.ResultData
 import com.example.healthprotask.auth.model.UserActivitiesResponse
-import com.example.healthprotask.databinding.FragmentWebVeiwBinding
+import com.example.healthprotask.databinding.FragmentWebViewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.io.UnsupportedEncodingException
@@ -33,11 +33,11 @@ class WebViewFragment : Fragment() {
     private var currentDay: String? = null
     private var bearerToken: String? = null
     private var refreshToken: String? = null
-    lateinit var binding: FragmentWebVeiwBinding
+    lateinit var binding: FragmentWebViewBinding
     private val TAG = WebViewFragment::class.java.simpleName
     private val url =
-//        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity"
-"https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
+        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
+//    private val url = "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
 
     var redirect: Boolean = false
     var completelyLoaded: Boolean = true   //when page is loaded completely ..it will be true
@@ -57,7 +57,7 @@ class WebViewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentWebVeiwBinding.inflate(inflater, container, false)
+        binding = FragmentWebViewBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -190,6 +190,12 @@ class WebViewFragment : Fragment() {
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
+        //going back to login fragment
+//        if (userActivitiesResponse != null){
+//            val navController = findNavController()
+//            navController.previousBackStackEntry?.savedStateHandle?.set("userActivitiesResponse", userActivitiesResponse)
+//            navController.popBackStack()
+//        }
         Toast.makeText(requireContext(), "User Data : ${userActivitiesResponse.toString()}", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "onPageFinished: userProfileData : ${userActivitiesResponse.toString()}")
     }
@@ -233,9 +239,9 @@ class WebViewFragment : Fragment() {
                 currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
                 Log.d(TAG, "handleAccessTokenRequest: currentDay : $currentDay")
 
-                    /**
-                     *  Refresh token api
-                     **/
+                /**
+                 *  Refresh token api
+                 **/
                 bearerToken.let { bearerToken ->
                     currentDay?.let { date ->
                         authViewModel.getUserActivities(bearerToken = bearerToken, date)
@@ -253,10 +259,10 @@ class WebViewFragment : Fragment() {
     @DelicateCoroutinesApi
     private fun handleUserProfile(profileResponse: ProfileResponse?) {
         //when accessTokenRequestResponse is failed and need to refresh access token ,use Refresh token
-        if (profileResponse?.success == false){
-                /**
-                 *  Refresh token api
-                 **/
+        if (profileResponse?.success == false) {
+            /**
+             *  Refresh token api
+             **/
             refreshToken?.let { refreshToken ->
                 bearerToken?.let { bearerToken ->
                     authViewModel.refreshToken(
