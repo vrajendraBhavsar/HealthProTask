@@ -21,7 +21,7 @@ import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.ResultData
 import com.example.healthprotask.auth.model.UserActivitiesResponse
-import com.example.healthprotask.databinding.FragmentWebVeiwBinding
+import com.example.healthprotask.databinding.FragmentWebViewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.io.UnsupportedEncodingException
@@ -33,7 +33,7 @@ class WebViewFragment : Fragment() {
     private var currentDay: String? = null
     private var bearerToken: String? = null
     private var refreshToken: String? = null
-    lateinit var binding: FragmentWebVeiwBinding
+    lateinit var binding: FragmentWebViewBinding
     private val TAG = WebViewFragment::class.java.simpleName
     private val url =
 //        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity"
@@ -57,7 +57,7 @@ class WebViewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentWebVeiwBinding.inflate(inflater, container, false)
+        binding = FragmentWebViewBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -234,7 +234,7 @@ class WebViewFragment : Fragment() {
                 Log.d(TAG, "handleAccessTokenRequest: currentDay : $currentDay")
 
                     /**
-                     *  Refresh token api
+                     *  User activities api
                      **/
                 bearerToken.let { bearerToken ->
                     currentDay?.let { date ->
