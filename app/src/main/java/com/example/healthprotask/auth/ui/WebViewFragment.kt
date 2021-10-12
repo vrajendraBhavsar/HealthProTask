@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.healthproclienttask.utility.NetworkUtility
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
 import com.example.healthprotask.auth.model.ProfileResponse
@@ -139,23 +140,6 @@ class WebViewFragment : Fragment() {
                         val code: String? = uri.getQueryParameter("code")
                         Log.d(TAG, "onPageFinished: code = $code")
 
-                        if (requestKey != null) {
-                            setFragmentResult(
-                                requestKey,
-                                Bundle().apply {
-                                    putString(DATA_KEY, code)
-                                }
-                            )
-                            //To Go back to parent activity
-//                            if (code != null) {
-//                                //1. back to Login Fragment
-////                            fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()//back to parent fragment
-//                                //2.
-//                                requireActivity().supportFragmentManager.beginTransaction()
-//                                    .add(R.id.container, LoginFragment.newInstance())
-////                                .addToBackStack("LoginFragment")
-//                                    .commit()
-//                            }
                             val base64 = getBase64("${NetworkUtility.Client_ID}:${NetworkUtility.Client_SECRET}")
                             Log.d(TAG, "getBase64: $base64")
                             val authorizationString = "Basic $base64"
@@ -175,7 +159,6 @@ class WebViewFragment : Fragment() {
                             }else {
                                 Log.d(TAG, "onPageFinished: code is empty")
                             }
-                        }
                     }
                 } else {
                     redirect = false
@@ -191,12 +174,12 @@ class WebViewFragment : Fragment() {
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
         //going back to login fragment
-//        if (userActivitiesResponse != null){
-//            val navController = findNavController()
-//            navController.previousBackStackEntry?.savedStateHandle?.set("userActivitiesResponse", userActivitiesResponse)
-//            navController.popBackStack()
-//        }
-        Toast.makeText(requireContext(), "User Data : ${userActivitiesResponse.toString()}", Toast.LENGTH_SHORT).show()
+        if (userActivitiesResponse != null){
+            val navController = findNavController()
+            navController.previousBackStackEntry?.savedStateHandle?.set("userActivitiesResponse", userActivitiesResponse)
+            navController.popBackStack()
+        }
+//        Toast.makeText(requireContext(), "User Data : ${userActivitiesResponse.toString()}", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "onPageFinished: userProfileData : ${userActivitiesResponse.toString()}")
     }
 

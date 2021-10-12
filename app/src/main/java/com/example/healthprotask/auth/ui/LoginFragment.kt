@@ -46,7 +46,7 @@ class LoginFragment : Fragment() {
 //                .addToBackStack("WebViewFragment")
 //                .commit()
 
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_webViewFragment)
+            findNavController(view).navigate(R.id.action_loginFragment_to_webViewFragment)
         }
 
         return view
@@ -55,21 +55,21 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        childFragmentManager.setFragmentResultListener(requestKey, this){ _, bundle ->
-            val code = bundle.getString(WebViewFragment.DATA_KEY, "Unknown")
-            Log.d(TAG, "onViewCreated: bundle code: $code")
-            Toast.makeText(requireContext(), "code : $code", Toast.LENGTH_LONG).show()
+//        childFragmentManager.setFragmentResultListener(requestKey, this){ _, bundle ->
+//            val code = bundle.getString(WebViewFragment.DATA_KEY, "Unknown")
+//            Log.d(TAG, "onViewCreated: bundle code: $code")
+//            Toast.makeText(requireContext(), "code : $code", Toast.LENGTH_LONG).show()
+//        }
 
-            val navController = findNavController()
-            navController.currentBackStackEntry?.savedStateHandle?.getLiveData<UserActivitiesResponse>("userActivitiesResponse")
-                ?.observe(viewLifecycleOwner) { userActivities ->
-                    Toast.makeText(requireContext(), "userActivities: $userActivities", Toast.LENGTH_LONG).show()
-                }
-        }
+        val navController = findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<UserActivitiesResponse>("userActivitiesResponse")
+            ?.observe(viewLifecycleOwner) { userActivities ->
+                Toast.makeText(requireContext(), "userActivities: $userActivities", Toast.LENGTH_LONG).show()
+            }
+
     }
-
     override fun onDestroy() {
         super.onDestroy()
-        childFragmentManager.clearFragmentResultListener(requestKey) // cleared listener
+//        childFragmentManager.clearFragmentResultListener(requestKey) // cleared listener
     }
 }

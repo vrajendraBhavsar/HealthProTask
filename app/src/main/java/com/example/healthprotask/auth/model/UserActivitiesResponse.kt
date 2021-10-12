@@ -2,12 +2,13 @@ package com.example.healthprotask.auth.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class UserActivitiesResponse(
     val activities: List<Activity>,
     val goals: Goals,
     val summary: Summary
-) {
+) : Serializable {
     data class Activity(
         val activityId: Int,
         val activityParentId: Int,
