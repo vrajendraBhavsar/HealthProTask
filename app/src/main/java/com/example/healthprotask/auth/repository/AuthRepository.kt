@@ -7,6 +7,7 @@ import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.auth.nework.AuthApiService
 import retrofit2.http.Field
 import retrofit2.http.Header
+import retrofit2.http.Query
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(private val authApiService: AuthApiService) {
@@ -32,10 +33,15 @@ class AuthRepository @Inject constructor(private val authApiService: AuthApiServ
 
     suspend fun getUserActivities(
         bearerToken: String,
-        date: String
+        beforeDate: String,
+        sort: String,
+        limit: Int,
+        offset: Int,
+        next: String?,
+        previous: String?
     ): UserActivitiesResponse {
         Log.d(TAG, "getUserProfile: ")
-        return authApiService.getUserActivities(bearerToken, date)
+        return authApiService.getUserActivities(bearerToken, beforeDate, sort, limit, offset, next, previous)
     }
 
     suspend fun refreshToken(

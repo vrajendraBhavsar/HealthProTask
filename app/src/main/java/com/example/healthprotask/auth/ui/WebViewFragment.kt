@@ -1,6 +1,8 @@
 package com.example.healthprotask.auth.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -43,6 +45,10 @@ class WebViewFragment : Fragment() {
     var redirect: Boolean = false
     var completelyLoaded: Boolean = true   //when page is loaded completely ..it will be true
 
+    private var PRIVATE_MODE = Context.MODE_PRIVATE
+    private val PREF_NAME = "bearer-token"
+    private val TOKEN_KEY: String = "bearer-token-key"
+
     private val authViewModel by viewModels<AuthViewModel>() //vm
 
     companion object {
@@ -63,16 +69,10 @@ class WebViewFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("CommitPrefEdits")
     @DelicateCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val requestKey = arguments?.getString(REQUEST_KEY, null)
-        Log.d(TAG, "onViewCreated: requestKey: $requestKey")
-        if (LoginFragment.requestKey.isNullOrEmpty()) {
-            //fragmentManager?.beginTransaction()?.remove(this@WebViewFragment)?.commit()//back to parent fragment
-            return
-        }
         //...method reference
         authViewModel.userProfileResponseLiveData.observe(viewLifecycleOwner, ::handleUserProfile)
         authViewModel.accessTokenRequestResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRequest)
@@ -223,13 +223,18 @@ class WebViewFragment : Fragment() {
                 currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
                 Log.d(TAG, "handleAccessTokenRequest: currentDay : $currentDay")
 
+                //Shared Preference
+                val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+                val editor = sharedPref.edit()
+                editor.putString(TOKEN_KEY, bearerToken)
+                editor.apply()
+
                 /**
                  *  user activities api
                  **/
-                bearerToken.let { bearerToken ->
                     currentDay?.let { date ->
-                        authViewModel.getUserActivities(bearerToken = bearerToken, date)
-                    }
+                        authViewModel.getUserActivities(bearerToken = bearerToken, beforeDate = date, sort = "desc",limit = 5,offset = 0, next = "", previous = "")
+//                        getUserActivities(date, "", "")
                 }
             }
             is ResultData.Failed -> {
@@ -261,22 +266,16 @@ class WebViewFragment : Fragment() {
         Log.d(TAG, "onPageFinished: userProfileData : ${profileResponse.toString()}")
     }
 
-//    private fun getUserProfile(accessToken: String): ProfileResponse? {
-//        Log.d(TAG, "getUserProfile: started")
-//        val profileResponseVar: ProfileResponse? = null
-//        //making Profile api req
-//        bearerToken = "Bearer $accessToken"
-//        //val bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM0JLWUYiLCJzdWIiOiI5TUZQNFAiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJzZXQgcmFjdCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNjMzNTQ5OTc2LCJpYXQiOjE2MzM1MjExNzZ9.3g0rWW39QlZ8Lq_owLEPPqd_jxKqGIrF4ltao15xe84"
-//
-//            /**
-//             *  Refresh token api
-//             **/
-//        bearerToken?.let { bearerToken ->
-//            authViewModel.getUserProfile(bearerToken = bearerToken)
-//        }
-//        Log.d(TAG, "getUserProfile: finished")
-//        return profileResponseVar
-//    }
+    fun getUserActivities(bearerToken: String, currentDay: String, next: String?, previous: String?) {
+        Log.d(TAG, "getUserProfile: started")
+//        var userActivitiesResponse: UserActivitiesResponse? = null
+        /**
+         *  user activities api
+         **/
+        bearerToken?.let { authViewModel.getUserActivities(bearerToken = it, beforeDate = currentDay, sort = "desc",limit = 5,offset = 0, next = next, previous = previous) }
+        Log.d(TAG, "getUserProfile: finished")
+//        return userActivitiesResponse
+    }
 
     private fun getBase64(s: String): String? {
         Log.d(TAG, "getBase64: started")

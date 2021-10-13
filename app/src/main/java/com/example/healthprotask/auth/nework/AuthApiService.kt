@@ -24,10 +24,15 @@ interface AuthApiService {//application/x-www-form-urlencoded
         @Header("Authorization") bearerToken: String
     ): ProfileResponse
 
-    @GET(NetworkUtility.USER_ACTIVITIES)
+    @GET(NetworkUtility.USER_ACTIVITIES)    //https://api.fitbit.com/1/user/-/activities/list.json?beforeDate=2021-10-13&sort=desc&limit=5&offset=0
     suspend fun getUserActivities(
         @Header("Authorization") bearerToken: String,
-        @Path("Date") date: String
+        @Query("beforeDate") beforeDate: String,
+        @Query("sort") sort: String,
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int,
+        @Query("next") next: String?,
+        @Query("previous") previous: String?
     ): UserActivitiesResponse
 
     @FormUrlEncoded

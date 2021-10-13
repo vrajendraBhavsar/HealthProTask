@@ -14,7 +14,12 @@ class ActivitiesUseCase @Inject constructor(private val authRepository: AuthRepo
     
     data class Param(
         val bearerToken: String,
-        val date: String
+        val beforeDate: String,
+        val sort: String,
+        val limit: Int,
+        val offset: Int,
+        val next: String?,
+        val previous: String?
     )
 
     override suspend fun execute(param: Param): UserActivitiesResponse {
@@ -22,7 +27,12 @@ class ActivitiesUseCase @Inject constructor(private val authRepository: AuthRepo
         return withContext(Dispatchers.IO) {
             authRepository.getUserActivities(
                 param.bearerToken,
-                param.date
+                param.beforeDate,
+                param.sort,
+                param.limit,
+                param.offset,
+                param.next,
+                param.previous
             )
         }
     }

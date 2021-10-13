@@ -9,7 +9,7 @@ import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.databinding.DataViewBinding
 
 class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>() {
-    private var activitiesList: List<UserActivitiesResponse.Activity> = listOf()
+    private var activitiesList: MutableList<UserActivitiesResponse.Activity> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
         return DataViewHolder(DataViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -27,17 +27,21 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
     class DataViewHolder(private val binding: DataViewBinding) : RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
         fun bind(activities: UserActivitiesResponse.Activity){
-            binding.tvName.text = "activity: ${activities.name}"
-            binding.tvCalories.text = "Calories: ${activities.calories.toString()}"
-            binding.tvDescription.text = "Description: ${activities.description}"
-            binding.tvDistance.text = "Distance: ${activities.distance.toString()}"
+            binding.tvName.text = "activity: ${activities.activityName}"
+            binding.tvCalories.text = "Calories: ${activities.calories}"
+            binding.tvSpeed.text = "Speed: ${activities.speed}"
+            binding.tvDistance.text = "Distance: ${activities.distance}"
+            binding.tvDistanceUnit.text = "(${activities.distanceUnit})"
             binding.tvStartTime.text = "StartTime: ${activities.startTime}"
-            binding.tvSteps.text = "Steps: ${activities.steps.toString()}"
+            binding.tvSteps.text = "Steps: ${activities.steps}"
         }
     }
 
     fun notifiySuccess(dataList: UserActivitiesResponse) {
-        activitiesList = dataList.activities
+        var list: List<UserActivitiesResponse.Activity> = dataList.activities
+        for (item in list.indices){
+            activitiesList.add(list[item])
+        }
         notifyDataSetChanged()
     }
 

@@ -74,10 +74,18 @@ class AuthViewModel @Inject constructor(
         Log.d(TAG, "getUserProfile: ended")
     }
 
-    fun getUserActivities(bearerToken: String, date: String) {
+    fun getUserActivities(
+        bearerToken: String,
+        beforeDate: String,
+        sort: String,
+        limit: Int,
+        offset: Int,
+        next: String?,
+        previous: String?
+    ) {
         Log.d(TAG, "getUserActivity: started")
         viewModelScope.launch {
-            val userActivitiesResponse: UserActivitiesResponse = activitiesUseCase.execute(ActivitiesUseCase.Param(bearerToken,date))
+            val userActivitiesResponse: UserActivitiesResponse = activitiesUseCase.execute(ActivitiesUseCase.Param(bearerToken,beforeDate, sort, limit, offset, next, previous))
                 _userActivitiesResponseLiveData.value = userActivitiesResponse
             }
         Log.d(TAG, "getUserProfile: ended")
