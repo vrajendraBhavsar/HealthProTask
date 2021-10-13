@@ -8,4 +8,11 @@
     <string name="authorization">Auth now</string>
     <string name="myActivities">My Activities</string>
 
+    <string name="activity"><Data><![CDATA[<b>Activity:</b>]]></Data></string>
+    <string name="Calories"><Data><![CDATA[<b>Calories:</b>]]></Data></string>
+    <string name="Description"><Data><![CDATA[<b>Description:</b>]]></Data></string>
+    <string name="Distance"><Data><![CDATA[<b>Distance:</b>]]></Data></string>
+    <string name="StartTime"><Data><![CDATA[<b>StartTime:</b>]]></Data></string>
+    <string name="Steps"><Data><![CDATA[<b>Steps:</b>]]></Data></string>
+
 </resources>

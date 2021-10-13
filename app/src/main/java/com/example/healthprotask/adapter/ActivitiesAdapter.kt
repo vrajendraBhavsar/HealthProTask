@@ -1,32 +1,46 @@
 package com.example.healthprotask.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.healthprotask.R
+import com.example.healthprotask.auth.model.UserActivitiesResponse
+import com.example.healthprotask.databinding.DataViewBinding
 
-class ActivitiesAdapter(val context: Context): RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>() {
-
+class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>() {
+    private var activitiesList: List<UserActivitiesResponse.Activity> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
-        return DataViewHolder(LayoutInflater.from(context).inflate(R.layout.data_view, parent, false))
+        return DataViewHolder(DataViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-//        holder.fullName.text = dataList[position].
+        holder.bind(activities = activitiesList[position])
     }
 
     override fun getItemCount(): Int {
-        return 0
+        return activitiesList.size
     }
 
-    class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-//        val fullName = itemView.findViewById<TextView>(R.id.tvFullName)
-//        val url = itemView.findViewById<TextView>(R.id.tvUrl)
+    class DataViewHolder(private val binding: DataViewBinding) : RecyclerView.ViewHolder(binding.root){
+        @SuppressLint("SetTextI18n")
+        fun bind(activities: UserActivitiesResponse.Activity){
+            binding.tvName.text = "activity: ${activities.name}"
+            binding.tvCalories.text = "Calories: ${activities.calories.toString()}"
+            binding.tvDescription.text = "Description: ${activities.description}"
+            binding.tvDistance.text = "Distance: ${activities.distance.toString()}"
+            binding.tvStartTime.text = "StartTime: ${activities.startTime}"
+            binding.tvSteps.text = "Steps: ${activities.steps.toString()}"
+        }
     }
+
+    fun notifiySuccess(dataList: UserActivitiesResponse) {
+        activitiesList = dataList.activities
+        notifyDataSetChanged()
+    }
+
 }
 
 

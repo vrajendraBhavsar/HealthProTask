@@ -178,6 +178,7 @@ class WebViewFragment : Fragment() {
             val navController = findNavController()
             navController.previousBackStackEntry?.savedStateHandle?.set("userActivitiesResponse", userActivitiesResponse)
             navController.popBackStack()
+            Toast.makeText(requireContext(), "Authorized successfully", Toast.LENGTH_SHORT).show()
         }
 //        Toast.makeText(requireContext(), "User Data : ${userActivitiesResponse.toString()}", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "onPageFinished: userProfileData : ${userActivitiesResponse.toString()}")
@@ -215,7 +216,7 @@ class WebViewFragment : Fragment() {
                 refreshToken = accessTokenRequestResponse?.refresh_token
                 Log.d(TAG, "accessToken: $accessToken")
                 Log.d(TAG, "refreshToken: $refreshToken")
-//              val userProfileResponse: ProfileResponse? = accessToken?.let { getUserProfile(it) } //to use comman fun for user api call
+//              val userProfileResponse: ProfileResponse? = accessToken?.let { getUserProfile(it) } //to use common fun for user api call
 
                 val bearerToken = "Bearer $accessToken"
                 Log.d(TAG, "bearerToken: $bearerToken")
@@ -223,7 +224,7 @@ class WebViewFragment : Fragment() {
                 Log.d(TAG, "handleAccessTokenRequest: currentDay : $currentDay")
 
                 /**
-                 *  Refresh token api
+                 *  user activities api
                  **/
                 bearerToken.let { bearerToken ->
                     currentDay?.let { date ->

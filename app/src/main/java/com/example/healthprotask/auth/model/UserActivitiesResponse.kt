@@ -15,7 +15,7 @@ data class UserActivitiesResponse(
         val activityParentName: String,
         val calories: Int,
         val description: String,
-        val distance: Int,
+        val distance: Double,
         val duration: Int,
         val hasActiveZoneMinutes: Boolean,
         val hasStartTime: Boolean,
@@ -50,7 +50,7 @@ data class UserActivitiesResponse(
     ) {
         data class Distance(
             val activity: String,
-            val distance: Int
+            val distance: Double
         )
     }
 }

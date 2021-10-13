@@ -34,5 +34,8 @@
         <action
             android:id="@+id/action_activitiesListFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <argument
+            android:name="userActivitiesResponse"
+            app:argType="com.example.healthprotask.auth.model.UserActivitiesResponse" />
     </fragment>
 </navigation>

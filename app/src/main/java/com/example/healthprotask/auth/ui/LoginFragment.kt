@@ -1,5 +1,6 @@
 package com.example.healthprotask.auth.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,8 +19,10 @@ import java.util.*
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+    private var currentUserActivities: UserActivitiesResponse? = null
     lateinit var binding: FragmentLoginBinding
     val TAG = LoginFragment::class.java.simpleName
+
 
     companion object{
         fun newInstance() = LoginFragment()
@@ -45,13 +48,20 @@ class LoginFragment : Fragment() {
 //                .replace(R.id.container, webViewFragment)
 //                .addToBackStack("WebViewFragment")
 //                .commit()
-
             findNavController(view).navigate(R.id.action_loginFragment_to_webViewFragment)
+        }
+
+        binding.btnMyActivities.setOnClickListener {
+                currentUserActivities?.let { userActivitiesResponse ->
+                    val action = LoginFragmentDirections.actionLoginFragmentToActivitiesListFragment(userActivitiesResponse = userActivitiesResponse)
+                    findNavController(requireView()).navigate(action)
+                }
         }
 
         return view
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,7 +74,17 @@ class LoginFragment : Fragment() {
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<UserActivitiesResponse>("userActivitiesResponse")
             ?.observe(viewLifecycleOwner) { userActivities ->
-                Toast.makeText(requireContext(), "userActivities: $userActivities", Toast.LENGTH_LONG).show()
+//                Toast.makeText(requireContext(), "userActivities: $userActivities", Toast.LENGTH_LONG).show()
+                currentUserActivities = userActivities
+                if (currentUserActivities != null){
+                    binding.btnAuth.visibility = View.GONE
+                    binding.btnMyActivities.visibility = View.VISIBLE
+
+                    binding.tvMultiPurposeInfo.text = "Want to logout? Click here."
+                    binding.tvMultiPurposeInfo.setOnClickListener {
+                        //log out functionality
+                    }
+                }
             }
 
     }
