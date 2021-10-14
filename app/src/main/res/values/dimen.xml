@@ -6,6 +6,7 @@
 
     <dimen name="text_2sp">2sp</dimen>
     <dimen name="text_5sp">5sp</dimen>
+    <dimen name="text_16sp">16sp</dimen>
 
     <dimen name="loginViewsMargin">150dp</dimen>
     <dimen name="view_5dp">5dp</dimen>

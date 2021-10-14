@@ -30,6 +30,8 @@ class ActivitiesListFragment : Fragment() {
     private lateinit var adapter: ActivitiesAdapter
     lateinit var binding: FragmentActivitiesListBinding
     val args: ActivitiesListFragmentArgs by navArgs()   //
+
+    var offset: String? = null
     //for manual pagination
     var page = 1
     var limit = 5   //will load till it gets next 5 data
@@ -48,6 +50,8 @@ class ActivitiesListFragment : Fragment() {
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
+        val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.next)
+        offset = uri.getQueryParameter("offset")
         userActivitiesResponse?.let { adapter.notifiySuccess(it) }
     }
 
@@ -58,8 +62,17 @@ class ActivitiesListFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_activities_list, container, false)
         binding = FragmentActivitiesListBinding.bind(view)
 
-        val activitiesList: UserActivitiesResponse = args.userActivitiesResponse    //getting list data
+        val activitiesList: UserActivitiesResponse = args.userActivitiesResponse    //getting UserActivitiesResponse model
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())  //manager
+
+        //getting Offset
+        val uri: Uri = Uri.parse(activitiesList.pagination.next)
+        offset = uri.getQueryParameter("offset")
+
+        val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
+        //getting sharedPreference data(Bearer Token) from WebView
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+        val bearerToken = sharedPref.getString(TOKEN_KEY, "default_value")
 
         adapter = ActivitiesAdapter()    //adapter
         adapter.notifiySuccess(activitiesList)  //added list data
@@ -71,14 +84,10 @@ class ActivitiesListFragment : Fragment() {
                         binding.progressBar.visibility = View.VISIBLE
                         //when reaches to last item position
                         //get next page data
-                        val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
-                        //getting sharedPreference data(Bearer Token) from WebView
-                        val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-                        val bearerToken = sharedPref.getString(TOKEN_KEY, "default_value")
                         Log.d(TAG, "onCreateView: bearer-token $bearerToken")
-                        //getting Offset
-                        val uri: Uri = Uri.parse(activitiesList.pagination.next)
-                        val offset: String? = uri.getQueryParameter("offset")
+//                        //getting Offset
+//                        val uri: Uri = Uri.parse(activitiesList.pagination.next)
+//                        offset = uri.getQueryParameter("offset")
                         //getting new before date
 //                        val uri: Uri = Uri.parse(url)
 //                        val before: String? = uri.getQueryParameter("code")
@@ -90,6 +99,10 @@ class ActivitiesListFragment : Fragment() {
                     }
                 }
         })
+        //dropdown list
+        bearerToken?.let { bearerToken ->
+            authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 100,offset = 0, next = activitiesList.pagination.next, previous = "")
+        }
 
 
         getData(page, limit)
