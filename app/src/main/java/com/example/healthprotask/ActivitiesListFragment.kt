@@ -74,20 +74,18 @@ class ActivitiesListFragment : Fragment() {
     private fun handleDistance(distanceResponse: DistanceResponse?) {
         distanceList = distanceResponse
         //getting distance list for drop down
-        if (distanceResponse != null){
-            distanceResponse?.let { disResponse ->
-                var dateList: MutableList<String> = ArrayList()
+        distanceResponse?.let { disResponse ->
+            var dateList: MutableList<String> = ArrayList()
 
-                for (date in disResponse.activitiesDistance){
-                    if (date.value != "0.0"){
-                        dateList.add(date.dateTime)
-                        Log.d(TAG, "handleDistance: ${date.dateTime}")
-                    }
+            for (date in disResponse.activitiesDistance){
+                if (date.value != "0.0"){
+                    dateList.add(date.dateTime)
+                    Log.d(TAG, "handleDistance: ${date.dateTime}")
                 }
-
-                val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_list, dateList)  //Adapter
-                binding.tvAutoComplete.setAdapter(arrayAdapter)
             }
+
+            val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_list, dateList)  //Adapter
+            binding.tvAutoComplete.setAdapter(arrayAdapter)
         }
     }
 
@@ -109,6 +107,11 @@ class ActivitiesListFragment : Fragment() {
         //getting sharedPreference data(Bearer Token) from WebView
         val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         val bearerToken = sharedPref.getString(TOKEN_KEY, "default_value")
+
+        binding.tvAutoComplete.setOnItemClickListener { adapterView, view, position, id ->
+            var date: String = adapterView.getItemAtPosition(position).toString()
+            bearerToken?.let { authViewModel.getUserActivities(bearerToken = it, date, sort = "desc",limit = 5,offset = 0, next = "", previous = "") }
+        }
 
         //getting distance for drop down
         bearerToken?.let { authViewModel.getDistance(it, date) }
