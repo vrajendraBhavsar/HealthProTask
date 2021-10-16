@@ -11,12 +11,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.healthprotask.adapter.ActivitiesAdapter
+import com.example.healthprotask.auth.model.DistanceResponse
 import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.auth.ui.AuthViewModel
 import com.example.healthprotask.auth.ui.WebViewFragment
@@ -24,6 +26,7 @@ import com.example.healthprotask.databinding.FragmentActivitiesListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class ActivitiesListFragment : Fragment() {
@@ -32,6 +35,7 @@ class ActivitiesListFragment : Fragment() {
     val args: ActivitiesListFragmentArgs by navArgs()   //
 
     var offset: String? = null
+    var distanceList: DistanceResponse? = null
     //for manual pagination
     var page = 1
     var limit = 5   //will load till it gets next 5 data
@@ -44,15 +48,47 @@ class ActivitiesListFragment : Fragment() {
 
     private val authViewModel by viewModels<AuthViewModel>() //vm
 
+//    override fun onResume() {
+//        super.onResume()
+//        //getting distance list for drop down
+//        if (distanceList != null){
+//            distanceList?.let { distanceResponse ->
+//                val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_list, distanceResponse.activitiesDistance)
+//                binding.tvAutoComplete.setAdapter(arrayAdapter)
+//            }
+//        }
+//    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         authViewModel.userActivitiesResponseLiveData.observe(viewLifecycleOwner, ::handleUserActivity)
+        authViewModel.distanceLiveData.observe(viewLifecycleOwner, ::handleDistance)
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
         val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.next)
         offset = uri.getQueryParameter("offset")
         userActivitiesResponse?.let { adapter.notifiySuccess(it) }
+    }
+
+    private fun handleDistance(distanceResponse: DistanceResponse?) {
+        distanceList = distanceResponse
+        //getting distance list for drop down
+        if (distanceResponse != null){
+            distanceResponse?.let { disResponse ->
+                var dateList: MutableList<String> = ArrayList()
+
+                for (date in disResponse.activitiesDistance){
+                    if (date.value != "0.0"){
+                        dateList.add(date.dateTime)
+                        Log.d(TAG, "handleDistance: ${date.dateTime}")
+                    }
+                }
+
+                val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_list, dateList)  //Adapter
+                binding.tvAutoComplete.setAdapter(arrayAdapter)
+            }
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -73,6 +109,9 @@ class ActivitiesListFragment : Fragment() {
         //getting sharedPreference data(Bearer Token) from WebView
         val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         val bearerToken = sharedPref.getString(TOKEN_KEY, "default_value")
+
+        //getting distance for drop down
+        bearerToken?.let { authViewModel.getDistance(it, date) }
 
         adapter = ActivitiesAdapter()    //adapter
         adapter.notifiySuccess(activitiesList)  //added list data

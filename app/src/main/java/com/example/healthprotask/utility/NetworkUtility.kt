@@ -14,7 +14,7 @@ object NetworkUtility {
     const val USER_PROFILE = "1/user/-/profile.json"
 //    const val USER_ACTIVITIES = "1/user/-/activities/date/{Date}.json"
     const val USER_ACTIVITIES = "1/user/-/activities/list.json"
-    const val USER_ACTIVITIES_DISTANCE = "/1/user/-/activities/distance/date/2021-01-01/{Date}.json"    //https://api.fitbit.com//1/user/-/activities/distance/date/2021-01-01/2021-10-14.json
+    const val USER_ACTIVITIES_DISTANCE = "/1/user/-/activities/distance/date/2021-01-01/{Date}.json"    //https://api.fitbit.com//1/user/-/activities/distance/date/2021-01-01/2021-10-16.json
     const val REQUEST_TOKEN_URL = "request_token"
     const val ACCESS_TOKEN_URL = "access_token"
 

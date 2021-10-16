@@ -2,6 +2,7 @@ package com.example.healthprotask.auth.repository
 
 import android.util.Log
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
+import com.example.healthprotask.auth.model.DistanceResponse
 import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.auth.nework.AuthApiService
@@ -29,6 +30,13 @@ class AuthRepository @Inject constructor(private val authApiService: AuthApiServ
     ): ProfileResponse {
         Log.d(TAG, "getUserProfile: ")
         return authApiService.getUserProfile(bearerToken)
+    }
+
+    suspend fun getDistance(
+        bearerToken: String,
+        date: String
+    ): DistanceResponse {
+        return authApiService.getDistance(bearerToken, date)
     }
 
     suspend fun getUserActivities(

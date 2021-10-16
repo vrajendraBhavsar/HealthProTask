@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class DistanceResponse(
     @SerializedName("activities-distance")
-    val activitiesDistance: List<ActivitiesDistance>
+    val activitiesDistance: MutableList<ActivitiesDistance>
 ) {
     data class ActivitiesDistance(
         val dateTime: String,

@@ -5,14 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.healthprotask.auth.model.AccessTokenRequestResponse
-import com.example.healthprotask.auth.model.ProfileResponse
-import com.example.healthprotask.auth.model.ResultData
-import com.example.healthprotask.auth.model.UserActivitiesResponse
-import com.example.healthprotask.auth.usecase.ActivitiesUseCase
-import com.example.healthprotask.auth.usecase.AuthUseCase
-import com.example.healthprotask.auth.usecase.ProfileUseCase
-import com.example.healthprotask.auth.usecase.RefreshTokenUseCase
+import com.example.healthprotask.auth.model.*
+import com.example.healthprotask.auth.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
@@ -23,7 +17,8 @@ class AuthViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
     private val profileUseCase: ProfileUseCase,
     private val refreshTokenUseCase: RefreshTokenUseCase,
-    private val activitiesUseCase: ActivitiesUseCase
+    private val activitiesUseCase: ActivitiesUseCase,
+    private val distanceUseCase: DistanceUseCase
 ) : ViewModel() {
     val TAG = AuthViewModel::class.java.simpleName
     
@@ -33,6 +28,9 @@ class AuthViewModel @Inject constructor(
 
     private val _userProfileResponseLiveData = MutableLiveData<ProfileResponse>()
     val userProfileResponseLiveData: LiveData<ProfileResponse> = _userProfileResponseLiveData
+
+    private val _distanceLiveData = MutableLiveData<DistanceResponse>()
+    val distanceLiveData: LiveData<DistanceResponse> = _distanceLiveData
 
     private val _userActivitiesResponseLiveData = MutableLiveData<UserActivitiesResponse>()
     val userActivitiesResponseLiveData: LiveData<UserActivitiesResponse> = _userActivitiesResponseLiveData
@@ -70,6 +68,15 @@ class AuthViewModel @Inject constructor(
             if (userProfileResponse.user.displayName?.isNotEmpty() == true) {
                 _userProfileResponseLiveData.value = userProfileResponse
             }
+        }
+        Log.d(TAG, "getUserProfile: ended")
+    }
+
+    fun getDistance(bearerToken: String, date: String) {
+        Log.d(TAG, "getUserProfile: started")
+        viewModelScope.launch {
+            val distanceUseCase: DistanceResponse = distanceUseCase.execute(DistanceUseCase.Param(bearerToken, date))
+            _distanceLiveData.value = distanceUseCase
         }
         Log.d(TAG, "getUserProfile: ended")
     }

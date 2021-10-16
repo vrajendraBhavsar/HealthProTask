@@ -2,6 +2,7 @@ package com.example.healthprotask.auth.nework
 
 import com.example.healthproclienttask.utility.NetworkUtility
 import com.example.healthprotask.auth.model.AccessTokenRequestResponse
+import com.example.healthprotask.auth.model.DistanceResponse
 import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.UserActivitiesResponse
 import retrofit2.http.*
@@ -26,8 +27,9 @@ interface AuthApiService {//application/x-www-form-urlencoded
 
     @GET(NetworkUtility.USER_ACTIVITIES_DISTANCE)
     suspend fun getDistance(
-        @Header("Authorization") bearerToken: String
-    ): ProfileResponse
+        @Header("Authorization") bearerToken: String,
+        @Path("Date") date: String
+    ): DistanceResponse
 
     @GET(NetworkUtility.USER_ACTIVITIES)    //https://api.fitbit.com/1/user/-/activities/list.json?beforeDate=2021-10-13&sort=desc&limit=5&offset=0
     suspend fun getUserActivities(
