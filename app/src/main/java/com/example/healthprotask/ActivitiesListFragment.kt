@@ -103,16 +103,25 @@ class ActivitiesListFragment : Fragment() {
         val uri: Uri = Uri.parse(activitiesList.pagination.next)
         offset = uri.getQueryParameter("offset")
 
-        val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
+        val date = SimpleDateFormat("yyyy-MM-dd").format(Date())    //to get today's date.
 
         //getting sharedPreference data(Bearer Token) from WebView
         val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         val bearerToken = sharedPref.getString(TOKEN_KEY, "default_value")
 
-        //Drop down click listener
+        /**
+        * Drop down click listener
+        **/
         binding.tvAutoComplete.setOnItemClickListener { adapterView, view, position, id ->
-            val date: String = adapterView.getItemAtPosition(position).toString()
-            bearerToken?.let { authViewModel.getUserActivities(bearerToken = it, date, sort = "desc",limit = 5,offset = 0, next = "", previous = "") }
+            var date: String = adapterView.getItemAtPosition(position).toString()
+            val sdf = SimpleDateFormat("yyyy-MM-dd")
+// Api is taking beforeDate than what we mention ..so to +1 the date
+            val c = Calendar.getInstance()
+            c.time = sdf.parse(date)
+            c.add(Calendar.DATE, 1) // number of days to add
+            date = sdf.format(c.time) // dt is now the new date
+
+            bearerToken?.let { authViewModel.getUserActivities(bearerToken = it, date, sort = "desc",limit = 100,offset = 0, next = "", previous = "") }
         }
 
         //getting distance for drop down
