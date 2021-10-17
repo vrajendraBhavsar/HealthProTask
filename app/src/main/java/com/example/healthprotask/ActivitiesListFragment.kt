@@ -104,12 +104,14 @@ class ActivitiesListFragment : Fragment() {
         offset = uri.getQueryParameter("offset")
 
         val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
+
         //getting sharedPreference data(Bearer Token) from WebView
         val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         val bearerToken = sharedPref.getString(TOKEN_KEY, "default_value")
 
+        //Drop down click listener
         binding.tvAutoComplete.setOnItemClickListener { adapterView, view, position, id ->
-            var date: String = adapterView.getItemAtPosition(position).toString()
+            val date: String = adapterView.getItemAtPosition(position).toString()
             bearerToken?.let { authViewModel.getUserActivities(bearerToken = it, date, sort = "desc",limit = 5,offset = 0, next = "", previous = "") }
         }
 
@@ -136,7 +138,6 @@ class ActivitiesListFragment : Fragment() {
 
                         if (bearerToken != null) {
                             offset?.toInt()?.let { authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 5,offset = it, next = activitiesList.pagination.next, previous = "") }
-//                              WebViewFragment().getUserActivities(bearerToken = bearerToken, currentDay = date, next = activitiesList.pagination.next, previous = activitiesList.pagination.previous)
                         }
                     }
                 }

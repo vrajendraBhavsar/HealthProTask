@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class UserActivitiesResponse(
-    val activities: List<Activity>,
+    val activities: MutableList<Activity>,
     val pagination: Pagination
 ): Serializable {
     data class Activity(

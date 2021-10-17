@@ -39,6 +39,13 @@ class AuthRepository @Inject constructor(private val authApiService: AuthApiServ
         return authApiService.getDistance(bearerToken, date)
     }
 
+    suspend fun getUserActivityOnDropDownSelect(
+        bearerToken: String,
+        date: String
+    ): DistanceResponse {
+        return authApiService.getDistance(bearerToken, date)
+    }
+
     suspend fun getUserActivities(
         bearerToken: String,
         beforeDate: String,

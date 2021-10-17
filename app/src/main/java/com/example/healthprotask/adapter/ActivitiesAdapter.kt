@@ -38,16 +38,15 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
     }
 
     fun notifiySuccess(dataList: UserActivitiesResponse) {
-        var list: List<UserActivitiesResponse.Activity> = dataList.activities
-        for (item in list.indices){
-            activitiesList.add(list[item])
-        }
+//        var list: List<UserActivitiesResponse.Activity> = dataList.activities
+//        for (item in list.indices){
+//            activitiesList.add(list[item])
+//        }
+        activitiesList = dataList.activities
         notifyDataSetChanged()
     }
 
 }
-
-
 
 //class InstagramPhotoListAdapter internal constructor(var context: Context) : PagedListAdapter<GitHubDataModel?, InstagramPhotoListAdapter.ItemViewHolder?>(DIFF_CALLBACK) {
 //

@@ -31,13 +31,13 @@ interface AuthApiService {//application/x-www-form-urlencoded
         @Path("Date") date: String
     ): DistanceResponse
 
-    @GET(NetworkUtility.USER_ACTIVITY_ON_DROPDOWN)
+    @GET(NetworkUtility.USER_ACTIVITY_ON_DROPDOWN)  //1/user/-/activities/date/{Date}.json
     suspend fun getUserActivityOnDropDownSelect(
         @Header("Authorization") bearerToken: String,
         @Path("Date") date: String
     ): DistanceResponse
 
-    @GET(NetworkUtility.USER_ACTIVITIES)    //https://api.fitbit.com/1/user/-/activities/list.json?beforeDate=2021-10-13&sort=desc&limit=5&offset=0
+    @GET(NetworkUtility.USER_ACTIVITIES)    //1/user/-/activities/list.json?beforeDate=2021-10-13&sort=desc&limit=5&offset=0
     suspend fun getUserActivities(
         @Header("Authorization") bearerToken: String,
         @Query("beforeDate") beforeDate: String,
