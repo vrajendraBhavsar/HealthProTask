@@ -21,7 +21,6 @@ import com.example.healthprotask.adapter.ActivitiesAdapter
 import com.example.healthprotask.auth.model.DistanceResponse
 import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.auth.ui.AuthViewModel
-import com.example.healthprotask.auth.ui.WebViewFragment
 import com.example.healthprotask.databinding.FragmentActivitiesListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -66,9 +65,21 @@ class ActivitiesListFragment : Fragment() {
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
-        val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.next)
-        offset = uri.getQueryParameter("offset")
-        userActivitiesResponse?.let { adapter.notifiySuccess(it) }
+        if (userActivitiesResponse?.pagination?.next != null){
+            val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.next)
+            offset = uri.getQueryParameter("offset")
+            userActivitiesResponse?.let {
+                adapter.notifySuccess(it)
+                Log.d(TAG, "handleUserActivity: next: $it")
+            }
+        }else{
+            val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.previous)
+            offset = uri.getQueryParameter("offset")
+            userActivitiesResponse?.let {
+                adapter.notifySuccess(it)
+                Log.d(TAG, "handleUserActivity: before: $it")
+            }
+        }
     }
 
     private fun handleDistance(distanceResponse: DistanceResponse?) {
@@ -128,7 +139,7 @@ class ActivitiesListFragment : Fragment() {
         bearerToken?.let { authViewModel.getDistance(it, date) }
 
         adapter = ActivitiesAdapter()    //adapter
-        adapter.notifiySuccess(activitiesList)  //added list data
+        adapter.notifySuccess(activitiesList)  //added list data
         binding.recyclerView.adapter = adapter
         binding.progressBar.visibility = View.GONE
         binding.svNested.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { nestedScrollView, scrollX, scrollY, oldScrollX, oldScrollY ->
@@ -146,7 +157,7 @@ class ActivitiesListFragment : Fragment() {
 //                        val before: String? = uri.getQueryParameter("code")
 
                         if (bearerToken != null) {
-                            offset?.toInt()?.let { authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 5,offset = it, next = activitiesList.pagination.next, previous = "") }
+                            offset?.toInt()?.let { authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 5,offset = it, next = activitiesList.pagination.next, previous = activitiesList.pagination.previous) }
                         }
                     }
                 }

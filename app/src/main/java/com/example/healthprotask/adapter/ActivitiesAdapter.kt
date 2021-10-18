@@ -1,12 +1,13 @@
 package com.example.healthprotask.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.databinding.DataViewBinding
+import java.text.SimpleDateFormat
+import kotlin.collections.ArrayList
 
 class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>() {
     private var activitiesList: MutableList<UserActivitiesResponse.Activity> = ArrayList()
@@ -32,12 +33,29 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
             binding.tvSpeed.text = "Speed: ${activities.speed}"
             binding.tvDistance.text = "Distance: ${activities.distance}"
             binding.tvDistanceUnit.text = "(${activities.distanceUnit})"
-            binding.tvStartTime.text = "StartTime: ${activities.startTime}"
+            binding.tvStartTime.text = "StartTime: ${(activities.startTime)}"
             binding.tvSteps.text = "Steps: ${activities.steps}"
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        fun fromISO8601UTCString(dateStr: String?): String {
+//            val tz: TimeZone = TimeZone.getTimeZone("UTC")
+//            val df: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+//            df.timeZone = tz
+//            try {
+//                return df.parse(dateStr).toString()
+//            } catch (e: ParseException) {
+//                e.printStackTrace()
+//            }
+//            return ""
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            val outputFormat = SimpleDateFormat("dd-MM-yyyy")
+            val date = inputFormat.parse(dateStr)
+            return outputFormat.format(date)
         }
     }
 
-    fun notifiySuccess(dataList: UserActivitiesResponse) {
+    fun notifySuccess(dataList: UserActivitiesResponse) {
 //        var list: List<UserActivitiesResponse.Activity> = dataList.activities
 //        for (item in list.indices){
 //            activitiesList.add(list[item])
@@ -45,7 +63,6 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
         activitiesList = dataList.activities
         notifyDataSetChanged()
     }
-
 }
 
 //class InstagramPhotoListAdapter internal constructor(var context: Context) : PagedListAdapter<GitHubDataModel?, InstagramPhotoListAdapter.ItemViewHolder?>(DIFF_CALLBACK) {
