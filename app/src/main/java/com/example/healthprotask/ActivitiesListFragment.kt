@@ -65,21 +65,22 @@ class ActivitiesListFragment : Fragment() {
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
-        if (userActivitiesResponse?.pagination?.next != null){
+//        if (userActivitiesResponse?.pagination?.next != null){
             val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.next)
             offset = uri.getQueryParameter("offset")
             userActivitiesResponse?.let {
                 adapter.notifySuccess(it)
-                Log.d(TAG, "handleUserActivity: next: $it")
+                Log.d(TAG, "handleUserActivity: next: ${it.pagination}")
             }
-        }else{
-            val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.previous)
-            offset = uri.getQueryParameter("offset")
-            userActivitiesResponse?.let {
-                adapter.notifySuccess(it)
-                Log.d(TAG, "handleUserActivity: before: $it")
-            }
-        }
+//        }else{
+//            val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.previous)
+//            offset = uri.getQueryParameter("offset")
+//            userActivitiesResponse?.let {
+//                adapter.notifySuccess(it)
+//                Log.d(TAG, "handleUserActivity: before: ${it.pagination}")
+//            }
+//        }
+        binding.progressBar.visibility = View.GONE
     }
 
     private fun handleDistance(distanceResponse: DistanceResponse?) {
@@ -145,7 +146,6 @@ class ActivitiesListFragment : Fragment() {
         binding.svNested.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { nestedScrollView, scrollX, scrollY, oldScrollX, oldScrollY ->
             if (nestedScrollView != null) {
                     if (scrollY == nestedScrollView.getChildAt(0).measuredHeight - nestedScrollView.measuredHeight){
-                        binding.progressBar.visibility = View.VISIBLE
                         //when reaches to last item position
                         //get next page data
                         Log.d(TAG, "onCreateView: bearer-token $bearerToken")
@@ -157,15 +157,16 @@ class ActivitiesListFragment : Fragment() {
 //                        val before: String? = uri.getQueryParameter("code")
 
                         if (bearerToken != null) {
-                            offset?.toInt()?.let { authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 5,offset = it, next = activitiesList.pagination.next, previous = activitiesList.pagination.previous) }
+                            binding.progressBar.visibility = View.VISIBLE
+                            offset?.toInt()?.let { authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 5,offset = it, next = activitiesList.pagination.next, previous = "") }
                         }
                     }
                 }
         })
-        //dropdown list
-        bearerToken?.let { bearerToken ->
-            authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 100,offset = 0, next = activitiesList.pagination.next, previous = "")
-        }
+//        //dropdown list
+//        bearerToken?.let { bearerToken ->
+//            authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 100,offset = 0, next = activitiesList.pagination.next, previous = "")
+//        }
 
 
         getData(page, limit)
