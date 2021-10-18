@@ -33,6 +33,7 @@ import java.util.*
 
 @AndroidEntryPoint
 class WebViewFragment : Fragment() {
+    private var accessToken: String? = ""
     private var currentDay: String? = null
     private var bearerToken: String? = null
     private var refreshToken: String? = null
@@ -148,7 +149,7 @@ class WebViewFragment : Fragment() {
                             /**
                              *  Token api req
                              **/
-                            if (code != null) {
+                            if (code != null && accessToken == "") {
                                 authViewModel.requestToken(
                                     authorization = authorizationString,
                                     clientId = NetworkUtility.Client_ID,
@@ -212,7 +213,7 @@ class WebViewFragment : Fragment() {
                 Log.d(TAG, "ResultData.Success: ${accessTokenRequestResponse.toString()}")
 
                 //retrieve access-token and refresh-token from response
-                val accessToken = accessTokenRequestResponse?.access_token
+                accessToken = accessTokenRequestResponse?.access_token
                 refreshToken = accessTokenRequestResponse?.refresh_token
                 Log.d(TAG, "accessToken: $accessToken")
                 Log.d(TAG, "refreshToken: $refreshToken")

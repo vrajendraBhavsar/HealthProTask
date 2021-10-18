@@ -65,14 +65,15 @@ class ActivitiesListFragment : Fragment() {
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
-//        if (userActivitiesResponse?.pagination?.next != null){
+        if (userActivitiesResponse?.pagination?.next != null){
             val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.next)
             offset = uri.getQueryParameter("offset")
             userActivitiesResponse?.let {
                 adapter.notifySuccess(it)
                 Log.d(TAG, "handleUserActivity: next: ${it.pagination}")
             }
-//        }else{
+        }
+//        else{
 //            val uri: Uri = Uri.parse(userActivitiesResponse?.pagination?.previous)
 //            offset = uri.getQueryParameter("offset")
 //            userActivitiesResponse?.let {
@@ -149,19 +150,22 @@ class ActivitiesListFragment : Fragment() {
                         //when reaches to last item position
                         //get next page data
                         Log.d(TAG, "onCreateView: bearer-token $bearerToken")
-//                        //getting Offset
-//                        val uri: Uri = Uri.parse(activitiesList.pagination.next)
-//                        offset = uri.getQueryParameter("offset")
-                        //getting new before date
-//                        val uri: Uri = Uri.parse(url)
-//                        val before: String? = uri.getQueryParameter("code")
-
                         if (bearerToken != null) {
                             binding.progressBar.visibility = View.VISIBLE
                             offset?.toInt()?.let { authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 5,offset = it, next = activitiesList.pagination.next, previous = "") }
                         }
                     }
-                }
+
+//                if (scrollY < oldScrollY){  //Scroll up
+//                    //when reaches to last item position
+//                    //get next page data
+//                    Log.d(TAG, "onCreateView: bearer-token $bearerToken")
+//                    if (bearerToken != null) {
+//                        binding.progressBar.visibility = View.VISIBLE
+//                        offset?.toInt()?.let { authViewModel.getUserActivities(bearerToken = bearerToken, date, sort = "desc",limit = 5,offset = it, next = "", previous = activitiesList.pagination.previous) }
+//                    }
+//                }
+            }
         })
 //        //dropdown list
 //        bearerToken?.let { bearerToken ->

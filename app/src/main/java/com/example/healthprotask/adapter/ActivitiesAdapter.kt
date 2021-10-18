@@ -1,6 +1,7 @@
 package com.example.healthprotask.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,7 @@ import kotlin.collections.ArrayList
 
 class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>() {
     private var activitiesList: MutableList<UserActivitiesResponse.Activity> = ArrayList()
+    private val TAG = ActivitiesAdapter::class.java.simpleName
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
         return DataViewHolder(DataViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -56,10 +58,11 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
     }
 
     fun notifySuccess(dataList: UserActivitiesResponse) {
-//        var list: List<UserActivitiesResponse.Activity> = dataList.activities
+//        val list: List<UserActivitiesResponse.Activity> = dataList.activities
 //        for (item in list.indices){
 //            activitiesList.add(list[item])
 //        }
+//        Log.d(TAG, "notifySuccess: paging list: $list")
         activitiesList = dataList.activities
         notifyDataSetChanged()
     }
