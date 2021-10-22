@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:paddingHorizontal="@dimen/view_10dp"
     android:background="@color/login_bk_color"
     android:focusableInTouchMode="true"
     android:gravity="center">
@@ -22,11 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="2dp">
 
             <RelativeLayout
+                android:id="@+id/rlBeforeLogin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="200dp">
 
                 <TextView
                     android:id="@+id/quote"
@@ -46,54 +48,11 @@
                     android:src="@drawable/ic_login_hero" />
             </RelativeLayout>
 
-            <TextView
-                style="@style/viewParent"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:text="Forgot Password?"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/newsMoreTextSize" />
-
-            <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
-                android:id="@+id/btnAuth"
-                style="@style/authButton"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/loginViewsMargin"
-                android:text="@string/authorization"
-                app:initialCornerAngle="27dp"
-                app:spinning_bar_color="#FFF"
-                app:spinning_bar_padding="6dp"
-                app:spinning_bar_width="4dp" />
-
-            <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
-                android:id="@+id/btnMyActivities"
-                style="@style/activitiesButton"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/loginViewsMargin"
-                android:text="@string/myActivities"
-                android:visibility="gone"
-                app:initialCornerAngle="27dp"
-                app:spinning_bar_color="#FFF"
-                app:spinning_bar_padding="6dp"
-                app:spinning_bar_width="4dp"
-                tools:visibility="visible"/>
-
-            <TextView
-                android:id="@+id/tvMultiPurposeInfo"
-                style="@style/parent"
-                android:layout_marginTop="@dimen/view_50dp"
-                android:text="New user? Click on Auth Now"
-                android:textAlignment="center"
-                android:textColor="@color/themeColor"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                tools:ignore="UsingOnClickInXml" />
-
-
             <LinearLayout
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="@dimen/view_5dp"
                 android:gravity="center"
                 android:weightSum="12">
 
@@ -108,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:text="Use other Methods"
+                    android:text="Stay fit with fitbit"
                     android:textAlignment="center"
                     android:textSize="12sp" />
 
@@ -120,33 +79,115 @@
 
             </LinearLayout>
 
-            <LinearLayout
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieBeforeLogin"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/before_login" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieAfterLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center">
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/after_login_success" />
 
-                <ImageView
+            <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
+                android:id="@+id/btnAuth"
+                style="@style/authButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/loginViewsMargin"
+                android:text="@string/authorization"
+                android:textAllCaps="false"
+                app:initialCornerAngle="27dp"
+                app:spinning_bar_color="#FFF"
+                app:spinning_bar_padding="6dp"
+                app:spinning_bar_width="4dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btnMyActivities"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/loginViewsMargin"
+                android:background="@drawable/button_track_your_exercise"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieBtnExercise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_facebook" />
+                    android:padding="@dimen/view_2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/btn_track_my_exercise"
+                    tools:background="@drawable/ic_facebook" />
 
-                <ImageView
+                <TextView
+                    android:id="@+id/tvTrackExercise"
+                    style="@style/viewParent.headerText.NoMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_google_plus" />
-            </LinearLayout>
+                    android:layout_centerVertical="true"
+                    android:text="Track Your Exercise"
+                    android:textColor="#1976d2"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/view_20dp"
+                android:background="@drawable/button_log_out"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tvLogout"
+                    style="@style/viewParent.headerText.NoMode"
+                    android:layout_centerVertical="true"
+                    android:paddingHorizontal="@dimen/view_5dp"
+                    android:text="Log Out"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieBtnLogOut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/btn_log_out"
+                    tools:background="@drawable/ic_facebook" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>
-
-    <View
-        android:layout_width="11dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ic_side_bg" />
-
 </RelativeLayout>

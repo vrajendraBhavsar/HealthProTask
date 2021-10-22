@@ -25,11 +25,13 @@ import com.example.healthprotask.auth.model.ProfileResponse
 import com.example.healthprotask.auth.model.ResultData
 import com.example.healthprotask.auth.model.UserActivitiesResponse
 import com.example.healthprotask.databinding.FragmentWebViewBinding
+import com.example.healthprotask.utility.SessionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.io.UnsupportedEncodingException
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WebViewFragment : Fragment() {
@@ -43,11 +45,14 @@ class WebViewFragment : Fragment() {
         "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
 //    private val url = "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
 
+    @Inject
+    lateinit var sessionManager: SessionManager //to handle session..
+
     var redirect: Boolean = false
     var completelyLoaded: Boolean = true   //when page is loaded completely ..it will be true
 
     private var PRIVATE_MODE = Context.MODE_PRIVATE
-    private val PREF_NAME = "bearer-token"
+//    private val PREF_NAME = "bearer-token"
     private val TOKEN_KEY: String = "bearer-token-key"
 
     private val authViewModel by viewModels<AuthViewModel>() //vm
@@ -58,6 +63,10 @@ class WebViewFragment : Fragment() {
         const val DATA_KEY = "data_key"
         const val GRANT_TYPE = "authorization_code"
         const val REFRESH_GRANT_TYPE = "refresh_token"
+        //for session
+        const val PREF_NAME: String = "HealthProPref"
+        const val IS_LOGIN: String = "isLoggedIn"
+        const val BEARER_TOKEN: String = "bearerToken"
     }
 
     override fun onCreateView(
@@ -67,6 +76,9 @@ class WebViewFragment : Fragment() {
     ): View? {
         binding = FragmentWebViewBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
+        //Session management
+        sessionManager = SessionManager(requireContext())
+
         return binding.root
     }
 
@@ -80,6 +92,12 @@ class WebViewFragment : Fragment() {
         authViewModel.accessTokenRefreshResponseLiveData.observe(viewLifecycleOwner, ::handleAccessTokenRefresh)
         authViewModel.userActivitiesResponseLiveData.observe(viewLifecycleOwner, ::handleUserActivity)
         //....
+
+        val base64 = getBase64("${NetworkUtility.Client_ID}:${NetworkUtility.Client_SECRET}")
+        Log.d(TAG, "getBase64: $base64")
+        val authorizationString = "Basic $base64"
+        Log.d(TAG, "authoriaztion String ..Basic XOXO : $authorizationString")
+
         binding.wbWebView.webViewClient = object : WebViewClient() {
             @SuppressLint("SetJavaScriptEnabled")
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -87,10 +105,21 @@ class WebViewFragment : Fragment() {
                     redirect = true
                 }
                 completelyLoaded = false
-                //loading url
+//                val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+//                bearerToken = sharedPref.getString(TOKEN_KEY, "")
 
+                //loading url
                 view?.apply {
-                    url?.let { loadUrl(it) }
+//                    if (bearerToken == ""){
+                        url?.let { loadUrl(it) }
+//                    }else{
+//                        currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
+//                        bearerToken?.let {
+//                            currentDay?.let { currentDay ->
+//                                authViewModel.getUserActivities(bearerToken = it, beforeDate = currentDay, sort = "desc",limit = 5,offset = 0, next = "", previous = "")
+//                            }
+//                        }
+//                    }
                     settings.javaScriptEnabled = true
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading1: $url")
@@ -110,7 +139,16 @@ class WebViewFragment : Fragment() {
                 completelyLoaded = false
                 //loading url
                 view?.apply {
-                    url?.let { loadUrl(it) }
+//                    if (bearerToken == ""){
+                        url?.let { loadUrl(it) }
+//                    }else{
+//                        currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
+//                        bearerToken?.let {
+//                            currentDay?.let { currentDay ->
+//                                authViewModel.getUserActivities(bearerToken = it, beforeDate = currentDay, sort = "desc",limit = 5,offset = 0, next = "", previous = "")
+//                            }
+//                        }
+//                    }
                     settings.javaScriptEnabled = true
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading2: ${request?.url}")
@@ -134,17 +172,12 @@ class WebViewFragment : Fragment() {
                     completelyLoaded = true
                 }
                 if (completelyLoaded && !redirect) { //means page is completely loaded
-                    Log.d(TAG, "onPageFinished: $completelyLoaded")
+//                    Log.d(TAG, "onPageFinished: $completelyLoaded")
                     if (!url.isNullOrEmpty()) {
                         Log.d(TAG, "onPageFinished: url link : $url")
                         val uri: Uri = Uri.parse(url)
                         val code: String? = uri.getQueryParameter("code")
                         Log.d(TAG, "onPageFinished: code = $code")
-
-                            val base64 = getBase64("${NetworkUtility.Client_ID}:${NetworkUtility.Client_SECRET}")
-                            Log.d(TAG, "getBase64: $base64")
-                            val authorizationString = "Basic $base64"
-                            Log.d(TAG, "authoriaztion String ..Basic XOXO : $authorizationString")
 
                             /**
                              *  Token api req
@@ -170,7 +203,17 @@ class WebViewFragment : Fragment() {
         //Mention chrome latest version...
         binding.wbWebView.settings.userAgentString =
             "Chrome/94.0.4606.71 Mobile"   //to avoid possible errors from occurring in latest versions
-        binding.wbWebView.loadUrl(url)
+//        if (bearerToken == ""){
+//            Log.d(TAG, "onViewCreated:BearerToken: $bearerToken")
+            binding.wbWebView.loadUrl(url)
+//        }else{
+//            currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
+//            bearerToken?.let {
+//                currentDay?.let { currentDay ->
+//                    authViewModel.getUserActivities(bearerToken = it, beforeDate = currentDay, sort = "desc",limit = 5,offset = 0, next = "", previous = "")
+//                }
+//            }
+//        }
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
@@ -213,7 +256,9 @@ class WebViewFragment : Fragment() {
                 Log.d(TAG, "ResultData.Success: ${accessTokenRequestResponse.toString()}")
 
                 //retrieve access-token and refresh-token from response
-                accessToken = accessTokenRequestResponse?.access_token
+                if (accessToken.isNullOrEmpty()){
+                    accessToken = accessTokenRequestResponse?.access_token
+                }
                 refreshToken = accessTokenRequestResponse?.refresh_token
                 Log.d(TAG, "accessToken: $accessToken")
                 Log.d(TAG, "refreshToken: $refreshToken")
@@ -225,10 +270,15 @@ class WebViewFragment : Fragment() {
                 Log.d(TAG, "handleAccessTokenRequest: currentDay : $currentDay")
 
                 //Shared Preference
-                val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-                val editor = sharedPref.edit()
-                editor.putString(TOKEN_KEY, bearerToken)
-                editor.apply()
+//                val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+//                val editor = sharedPref.edit()
+//                editor.putString(BEARER_TOKEN, bearerToken)
+//                editor.apply()
+
+                bearerToken?.let { bearer ->
+                    sessionManager.createAuthSession(bearer)    //stored token in shared preference.
+                    Log.d(TAG, ">>>bearer-token added from webView>>>: $bearer")
+                }
 
                 /**
                  *  user activities api
@@ -236,7 +286,7 @@ class WebViewFragment : Fragment() {
                     currentDay?.let { date ->
                         authViewModel.getUserActivities(bearerToken = bearerToken, beforeDate = date, sort = "desc",limit = 5,offset = 0, next = "", previous = "")
 //                        getUserActivities(date, "", "")
-                }
+                    }
             }
             is ResultData.Failed -> {
                 Log.d(TAG, "ResultData.Failed: ${resultData.message}")

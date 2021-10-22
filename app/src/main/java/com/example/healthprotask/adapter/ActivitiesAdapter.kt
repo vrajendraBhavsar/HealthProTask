@@ -41,15 +41,6 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
 
         @SuppressLint("SimpleDateFormat")
         fun fromISO8601UTCString(dateStr: String?): String {
-//            val tz: TimeZone = TimeZone.getTimeZone("UTC")
-//            val df: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-//            df.timeZone = tz
-//            try {
-//                return df.parse(dateStr).toString()
-//            } catch (e: ParseException) {
-//                e.printStackTrace()
-//            }
-//            return ""
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             val outputFormat = SimpleDateFormat("dd-MM-yyyy")
             val date = inputFormat.parse(dateStr)
@@ -58,57 +49,12 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
     }
 
     fun notifySuccess(dataList: UserActivitiesResponse) {
-//        val list: List<UserActivitiesResponse.Activity> = dataList.activities
-//        for (item in list.indices){
-//            activitiesList.add(list[item])
-//        }
-//        Log.d(TAG, "notifySuccess: paging list: $list")
-        activitiesList = dataList.activities
+        val list: List<UserActivitiesResponse.Activity> = dataList.activities
+        for (item in list.indices){
+            activitiesList.add(list[item])
+        }
+        Log.d(TAG, "notifySuccess: paging list: $list")
+//        activitiesList = dataList.activities
         notifyDataSetChanged()
     }
 }
-
-//class InstagramPhotoListAdapter internal constructor(var context: Context) : PagedListAdapter<GitHubDataModel?, InstagramPhotoListAdapter.ItemViewHolder?>(DIFF_CALLBACK) {
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-//        val view: View = LayoutInflater.from(context).inflate(R.layout.activity_list_item, parent, false)
-//        return ItemViewHolder(view)
-//    }
-//
-//    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-//        val item: GitHubDataModel = getItem(position)
-//
-//        val cd = ColorDrawable(context.getResources().getColor(R.color.pp_bg_color))
-//        if (item != null) {
-//            Picasso.with(context)
-//                .load(item.media_url as String)
-//                .transform(CropTransformation(256))
-//                .placeholder(cd)
-//                .into(holder.profileImage)
-//        }
-//    }
-//
-//    override fun onCurrentListChanged(previousList: PagedList<GitHubDataModel>?, currentList: PagedList<GitHubDataModel>?) {
-//        super.onCurrentListChanged(previousList, currentList)
-//    }
-//
-//    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//
-//        var profileImage: ImageView? = null
-//
-//        init {
-//            profileImage = itemView.findViewById<View>(R.id.fb_profile_img) as ImageView
-//        }
-//    }
-//
-//    companion object {
-//        private val DIFF_CALLBACK: DiffUtil.ItemCallback<GitHubDataModel> = object : DiffUtil.ItemCallback<GitHubDataModel>() {
-//            override fun areItemsTheSame(oldItem: GitHubDataModel newItem: GitHubDataModel: Boolean {
-//                return oldItem.id === newItem.id
-//            }
-//            override fun areContentsTheSame(oldItem: GitHubDataModel newItem: GitHubDataModel: Boolean {
-//                return oldItem.equals(newItem)
-//            }
-//        }
-//    }
-//}

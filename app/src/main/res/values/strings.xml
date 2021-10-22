@@ -5,7 +5,7 @@
 
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>
-    <string name="authorization">Auth now</string>
+    <string name="authorization">Log in</string>
     <string name="myActivities">My Activities</string>
 
     <string name="activity"><Data><![CDATA[<b>Activity:</b>]]></Data></string>
