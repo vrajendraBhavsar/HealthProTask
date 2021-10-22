@@ -33,10 +33,7 @@ class LoginFragment : Fragment() {
     lateinit var sessionManager: SessionManager //to handle session..
 
     private val authViewModel by viewModels<AuthViewModel>() //vm
-
     private var bearerToken: String? = ""
-    private val PRIVATE_MODE = Context.MODE_PRIVATE
-    private val TOKEN_KEY: String = "bearer-token-key"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +41,6 @@ class LoginFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         if (sessionManager.isLoggedIn()){
             val currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
-
-            //getting sharedPreference data(Bearer Token) from Session manger
-//            val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-//            bearerToken = sharedPref.getString(TOKEN_KEY, "")
             //1
             bearerToken = sessionManager.getBearerToken()
             Log.d(TAG, ">>>bearer token from login session:>>> $bearerToken")
@@ -62,10 +55,17 @@ class LoginFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.lottieLoading.visibility = View.GONE
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
         binding = FragmentLoginBinding.bind(view)
+
+        binding.lottieLoading.visibility = View.GONE
 
         //handle ui
         val navController = findNavController()
@@ -74,6 +74,7 @@ class LoginFragment : Fragment() {
 //                Toast.makeText(requireContext(), "userActivities: $userActivities", Toast.LENGTH_LONG).show()
                 currentUserActivities = userActivities
                 if (currentUserActivities != null){
+                    binding.lottieLoading.visibility = View.GONE
                     binding.btnAuth.visibility = View.GONE
                     binding.btnMyActivities.visibility = View.VISIBLE
                     binding.btnLogout.visibility = View.VISIBLE
@@ -85,14 +86,7 @@ class LoginFragment : Fragment() {
             }
 
         binding.btnAuth.setOnClickListener {
-//            //getting sharedPreference data(Bearer Token) from WebView
-//            val sharedPref: SharedPreferences = requireContext().getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-//            bearerToken = sharedPref.getString(TOKEN_KEY, "")
-//            Log.d(TAG, "bearer token form login session: $bearerToken")
-//
-//            bearerToken?.let { bearer ->
-//                sessionManager.createAuthSession(bearer)    //stored token in shared preference.
-//            }
+            sessionManager.editor.clear().commit()
             findNavController(view).navigate(R.id.action_loginFragment_to_webViewFragment)
         }
 
@@ -102,6 +96,9 @@ class LoginFragment : Fragment() {
                     val action = LoginFragmentDirections.actionLoginFragmentToActivitiesListFragment(userActivitiesResponse = userActivitiesResponse)
                     findNavController(requireView()).navigate(action)
                 }
+        }
+        binding.btnLogout.setOnClickListener {
+            sessionManager.logoutUser()
         }
         return view
     }
@@ -129,10 +126,5 @@ class LoginFragment : Fragment() {
                 findNavController(requireView()).navigate(action)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        childFragmentManager.clearFragmentResultListener(requestKey) // cleared listener
     }
 }

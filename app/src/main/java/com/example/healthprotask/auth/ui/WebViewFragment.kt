@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -203,6 +204,8 @@ class WebViewFragment : Fragment() {
         //Mention chrome latest version...
         binding.wbWebView.settings.userAgentString =
             "Chrome/94.0.4606.71 Mobile"   //to avoid possible errors from occurring in latest versions
+        binding.wbWebView.clearCache(true)
+        binding.wbWebView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
 //        if (bearerToken == ""){
 //            Log.d(TAG, "onViewCreated:BearerToken: $bearerToken")
             binding.wbWebView.loadUrl(url)

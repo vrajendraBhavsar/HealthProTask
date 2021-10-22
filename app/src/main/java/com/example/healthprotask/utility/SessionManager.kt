@@ -49,7 +49,6 @@ public class SessionManager @Inject constructor() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
 //            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_webViewFragment)
-
             context.applicationContext
         }
     }
@@ -71,6 +70,7 @@ public class SessionManager @Inject constructor() {
      * log out user
      * */
     fun logoutUser(){
+        editor.remove(getBearerToken())
         editor.clear()
         editor.commit()
 

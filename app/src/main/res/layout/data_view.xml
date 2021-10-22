@@ -14,6 +14,15 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp">
 
+            <ImageView
+                android:id="@+id/ivActivity"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_walk"
+                android:layout_margin="@dimen/view_2dp"
+                app:layout_constraintStart_toStartOf="@id/cardView"
+                app:layout_constraintTop_toTopOf="@id/cardView" />
+
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
@@ -24,8 +33,30 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/cardView"
-                app:layout_constraintTop_toTopOf="@id/cardView" />
+                app:layout_constraintStart_toEndOf="@id/ivActivity"
+                app:layout_constraintTop_toTopOf="@id/ivActivity"
+                app:layout_constraintBottom_toBottomOf="@id/ivActivity"/>
+
+            <TextView
+                android:id="@+id/tvStartTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Time"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="@id/tvName"
+                app:layout_constraintTop_toBottomOf="@id/tvName" />
+
+            <ImageView
+                android:id="@+id/ivCalories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_calories"
+                android:layout_margin="@dimen/view_2dp"
+                app:layout_constraintEnd_toStartOf="@id/tvCalories"
+                app:layout_constraintTop_toTopOf="@id/tvCalories"
+                app:layout_constraintBottom_toBottomOf="@id/tvCalories"/>
 
             <TextView
                 android:id="@+id/tvCalories"
@@ -35,71 +66,108 @@
                 android:text="Calories"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/tvName"
-                app:layout_constraintTop_toBottomOf="@id/tvName" />
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="@id/tvPace"
+                app:layout_constraintTop_toBottomOf="@id/tvPace"
+                tools:layout_editor_absoluteX="186dp"
+                tools:layout_editor_absoluteY="44dp" />
+
+            <TextView
+                android:id="@+id/tvCaloriesUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:text="Pace Unit"
+                android:layout_marginStart="@dimen/view_5dp"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCalories"
+                app:layout_constraintStart_toEndOf="@+id/tvCalories"
+                app:layout_constraintTop_toTopOf="@+id/tvCalories" />
+
+            <ImageView
+                android:id="@+id/ivSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_speed"
+                android:layout_margin="@dimen/view_2dp"
+                app:layout_constraintEnd_toStartOf="@id/tvSpeed"
+                app:layout_constraintTop_toTopOf="@id/tvSpeed"
+                app:layout_constraintBottom_toBottomOf="@id/tvSpeed"/>
 
             <TextView
                 android:id="@+id/tvSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:text="Description"
+                android:text="Speed"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/tvCalories"
-                app:layout_constraintTop_toBottomOf="@id/tvCalories" />
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCalories"
+                app:layout_constraintStart_toStartOf="@+id/tvSteps"
+                app:layout_constraintTop_toTopOf="@+id/tvCalories" />
+
+            <ImageView
+                android:id="@+id/ivDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_distance"
+                android:layout_margin="@dimen/view_2dp"
+                app:layout_constraintEnd_toStartOf="@id/tvPace"
+                app:layout_constraintTop_toTopOf="@id/tvPace"
+                app:layout_constraintBottom_toBottomOf="@id/tvPace"/>
 
             <TextView
-                android:id="@+id/tvDistance"
+                android:id="@+id/tvPace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Pace"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="@+id/tvStartTime"
+                app:layout_constraintTop_toBottomOf="@+id/tvStartTime" />
+
+            <TextView
+                android:id="@+id/tvPaceUnit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:text="Distance"
+                android:text="Pace Unit"
+                android:layout_marginStart="@dimen/view_5dp"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/tvSpeed"
-                app:layout_constraintTop_toBottomOf="@id/tvSpeed" />
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPace"
+                app:layout_constraintStart_toEndOf="@+id/tvPace"
+                app:layout_constraintTop_toTopOf="@+id/tvPace" />
 
-            <TextView
-                android:id="@+id/tvDistanceUnit"
+            <ImageView
+                android:id="@+id/ivSteps"
+                android:layout_marginStart="150dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                android:text="Distance Unit"
-                android:layout_marginStart="@dimen/view_10dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/tvDistance"
-                app:layout_constraintStart_toEndOf="@+id/tvDistance"
-                app:layout_constraintTop_toTopOf="@+id/tvDistance" />
-
-            <TextView
-                android:id="@+id/tvStartTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                android:text="Start Time"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/tvDistance"
-                app:layout_constraintTop_toBottomOf="@id/tvDistance" />
+                android:src="@drawable/ic_step"
+                app:layout_constraintBottom_toBottomOf="@+id/ivDistance"
+                app:layout_constraintStart_toEndOf="@+id/ivDistance"
+                app:layout_constraintTop_toTopOf="@+id/ivDistance" />
 
             <TextView
                 android:id="@+id/tvSteps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
+                android:layout_marginHorizontal="@dimen/view_2dp"
                 android:text="Steps"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/tvStartTime"
-                app:layout_constraintTop_toBottomOf="@id/tvStartTime" />
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/ivSteps"
+                app:layout_constraintStart_toEndOf="@+id/ivSteps"
+                app:layout_constraintTop_toTopOf="@+id/ivSteps" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,8 +11,18 @@
         <entry key="app/src/main/res/drawable/button_background_dark_blue.xml" value="0.26927083333333335" />
         <entry key="app/src/main/res/drawable/button_track_your_excercise.xml" value="0.26927083333333335" />
         <entry key="app/src/main/res/drawable/button_track_your_exercise.xml" value="0.26927083333333335" />
+        <entry key="app/src/main/res/drawable/ic_bycycle.xml" value="0.27870370370370373" />
+        <entry key="app/src/main/res/drawable/ic_calories.xml" value="0.27870370370370373" />
+        <entry key="app/src/main/res/drawable/ic_distance.xml" value="0.27870370370370373" />
         <entry key="app/src/main/res/drawable/ic_login_hero.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_run.xml" value="0.27870370370370373" />
+        <entry key="app/src/main/res/drawable/ic_speed.xml" value="0.27870370370370373" />
+        <entry key="app/src/main/res/drawable/ic_step.xml" value="0.27870370370370373" />
+        <entry key="app/src/main/res/drawable/ic_swimming.xml" value="0.2651282051282051" />
+        <entry key="app/src/main/res/drawable/ic_walk.xml" value="0.27870370370370373" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/data_view.xml" value="0.33643617021276595" />
+        <entry key="app/src/main/res/layout/fragment_activities_list.xml" value="0.12310030395136778" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.18" />
         <entry key="app/src/main/res/layout/fragment_web_veiw.xml" value="0.253125" />
       </map>
