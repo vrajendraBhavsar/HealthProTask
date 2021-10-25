@@ -40,7 +40,7 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
         @SuppressLint("SetTextI18n")
         fun bind(activities: UserActivitiesResponse.Activity){
             when(activities.activityName){
-                "Walk" -> binding.ivActivity.setImageResource(R.drawable.ic_bicycle)
+                "Walk" -> binding.ivActivity.setImageResource(R.drawable.ic_walk)
                 "Bike" -> binding.ivActivity.setImageResource(R.drawable.ic_bicycle)
                 "Swim" -> binding.ivActivity.setImageResource(R.drawable.ic_swimming)
                 "Run" -> binding.ivActivity.setImageResource(R.drawable.ic_run)
@@ -51,7 +51,7 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
             val startTimeDate: Date = df1.parse(string1)
 
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-            val outputFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a")
+            val outputFormat = SimpleDateFormat("dd-MM-yyyy hh:mm:ss a")
             val parsedDate = inputFormat.parse(startTimeDate.toInstant().toString())
             val formattedDate = outputFormat.format(parsedDate)
 

@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
@@ -39,7 +40,6 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     lateinit var sessionManager: SessionManager //to handle session..
 
     var offset: String? = null
-    var distanceList: DistanceResponse? = null
 
     //for manual pagination
     var page = 1
@@ -147,8 +147,20 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             /**
              * date picker dialog
              **/
-            DatePickerDialog(requireContext(), this, year, month, day).show()
+            val dialog: DatePickerDialog = DatePickerDialog(requireContext(), this, year, month, day)
+            dialog.datePicker.maxDate = Date().time     //set max date
+            dialog.show()
         }
+
+//        binding.tlFilter.setOnTouchListener { v, event -> //            when (event?.action) {
+//            //                MotionEvent.ACTION_DOWN ->
+//            val dialog: DatePickerDialog =
+//            DatePickerDialog(requireContext(), this, year, month, day)
+//            dialog.datePicker.maxDate = Date().time     //set max date
+//            dialog.show()
+//            //            }
+//            v?.onTouchEvent(event) ?: true
+//        }
     }
 
     @SuppressLint("SetTextI18n")

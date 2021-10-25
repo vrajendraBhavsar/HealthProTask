@@ -11,7 +11,7 @@ import com.example.healthprotask.R
 import com.example.healthprotask.auth.AuthActivity
 import javax.inject.Inject
 
-public class SessionManager @Inject constructor() {
+class SessionManager @Inject constructor() {
     private val TAG: String = SessionManager::class.java.simpleName
     lateinit var pref : SharedPreferences
     lateinit var editor : SharedPreferences.Editor
@@ -79,5 +79,4 @@ public class SessionManager @Inject constructor() {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
-
 }

@@ -14,5 +14,7 @@
     <string name="Distance"><Data><![CDATA[<b>Distance:</b>]]></Data></string>
     <string name="StartTime"><Data><![CDATA[<b>StartTime:</b>]]></Data></string>
     <string name="Steps"><Data><![CDATA[<b>Steps:</b>]]></Data></string>
+    <string name="date">Date</string>
+    <string name="select_date">Select date</string>
 
 </resources>

@@ -14,18 +14,34 @@
             android:id="@+id/action_loginFragment_to_webViewFragment"
             app:destination="@id/webViewFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_activitiesListFragment"
-            app:destination="@id/activitiesListFragment" />
+            android:id="@+id/action_loginFragment_to_loginSuccessFragment"
+            app:destination="@id/loginSuccessFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/webViewFragment"
         android:name="com.example.healthprotask.auth.ui.WebViewFragment"
         android:label="fragment_web_veiw"
         tools:layout="@layout/fragment_web_view" >
+
         <action
-            android:id="@+id/action_webViewFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            android:id="@+id/action_webViewFragment_to_loginSuccessFragment"
+            app:destination="@id/loginSuccessFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/loginSuccessFragment"
+        android:name="com.example.healthprotask.LoginSuccessFragment"
+        android:label="fragment_login_success"
+        tools:layout="@layout/fragment_login_success" >
+        <action
+            android:id="@+id/action_loginSuccessFragment_to_activitiesListFragment"
+            app:destination="@id/activitiesListFragment" />
+        <argument
+            android:name="userActivitiesResponse"
+            app:argType="com.example.healthprotask.auth.model.UserActivitiesResponse" />
+    </fragment>
+
     <fragment
         android:id="@+id/activitiesListFragment"
         android:name="com.example.healthprotask.ActivitiesListFragment"

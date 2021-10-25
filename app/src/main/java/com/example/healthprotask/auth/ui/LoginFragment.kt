@@ -42,22 +42,22 @@ class LoginFragment : Fragment() {
         if (sessionManager.isLoggedIn()){
             val currentDay = SimpleDateFormat("yyyy-MM-dd").format(Date())
             //1
-            bearerToken = sessionManager.getBearerToken()
+//            bearerToken = sessionManager.getBearerToken()
             Log.d(TAG, ">>>bearer token from login session:>>> $bearerToken")
-            /**
-             *  user activities api
-             **/
-            currentDay?.let { date ->
-                //2
-                bearerToken?.let { authViewModel.getUserActivities(bearerToken = it, beforeDate = date, sort = "desc",limit = 5,offset = 0, next = "", previous = "") }
-            }
-            //after api call..we will get data in handleUserActivity()
+//            /**
+//             *  user activities api
+//             **/
+//            currentDay?.let { date ->
+//                //2
+//                bearerToken?.let { authViewModel.getUserActivities(bearerToken = it, beforeDate = date, sort = "desc",limit = 5,offset = 0, next = "", previous = "") }
+//            }
+            //.....
+            findNavController().navigate(R.id.action_loginFragment_to_loginSuccessFragment)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        binding.lottieLoading.visibility = View.GONE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,40 +65,23 @@ class LoginFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
         binding = FragmentLoginBinding.bind(view)
 
-        binding.lottieLoading.visibility = View.GONE
-
         //handle ui
         val navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<UserActivitiesResponse>("userActivitiesResponse")
             ?.observe(viewLifecycleOwner) { userActivities ->
 //                Toast.makeText(requireContext(), "userActivities: $userActivities", Toast.LENGTH_LONG).show()
                 currentUserActivities = userActivities
-                if (currentUserActivities != null){
-                    binding.lottieLoading.visibility = View.GONE
-                    binding.btnAuth.visibility = View.GONE
-                    binding.btnMyActivities.visibility = View.VISIBLE
-                    binding.btnLogout.visibility = View.VISIBLE
-                    binding.rlBeforeLogin.visibility = View.GONE
-                    binding.lottieAfterLogin.visibility = View.VISIBLE
-                    binding.lottieBeforeLogin.visibility = View.GONE
-                    binding.divider.visibility = View.GONE
-                }
+//                if (currentUserActivities != null){
+//                    binding.btnAuth.visibility = View.GONE
+//                    binding.rlBeforeLogin.visibility = View.GONE
+//                    binding.lottieBeforeLogin.visibility = View.GONE
+//                    binding.divider.visibility = View.GONE
+//                }
             }
 
         binding.btnAuth.setOnClickListener {
             sessionManager.editor.clear().commit()
             findNavController(view).navigate(R.id.action_loginFragment_to_webViewFragment)
-        }
-
-        binding.btnMyActivities.setOnClickListener {
-                currentUserActivities?.let { userActivitiesResponse ->
-                    Log.d(TAG, ">>>userActivities from btn click $userActivitiesResponse")
-                    val action = LoginFragmentDirections.actionLoginFragmentToActivitiesListFragment(userActivitiesResponse = userActivitiesResponse)
-                    findNavController(requireView()).navigate(action)
-                }
-        }
-        binding.btnLogout.setOnClickListener {
-            sessionManager.logoutUser()
         }
         return view
     }
@@ -107,24 +90,19 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     //method reference
-        authViewModel.userActivitiesResponseLiveData.observe(viewLifecycleOwner, ::handleUserActivity)
+//        authViewModel.userActivitiesResponseLiveData.observe(viewLifecycleOwner, ::handleUserActivity)
     }
 
-    private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
-        if (userActivitiesResponse != null){
-            binding.btnAuth.visibility = View.GONE
-            binding.btnMyActivities.visibility = View.VISIBLE
-            binding.btnLogout.visibility = View.VISIBLE
-            binding.rlBeforeLogin.visibility = View.GONE
-            binding.lottieAfterLogin.visibility = View.VISIBLE
-            binding.lottieBeforeLogin.visibility = View.GONE
-            binding.divider.visibility = View.GONE
-        }
-        binding.btnMyActivities.setOnClickListener {
-            userActivitiesResponse?.let { userActivitiesResponse ->
-                val action = LoginFragmentDirections.actionLoginFragmentToActivitiesListFragment(userActivitiesResponse = userActivitiesResponse)
-                findNavController(requireView()).navigate(action)
-            }
-        }
-    }
+//    private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
+//        if (userActivitiesResponse != null){
+//            binding.btnAuth.visibility = View.GONE
+//            binding.rlBeforeLogin.visibility = View.GONE
+//            binding.lottieBeforeLogin.visibility = View.GONE
+//            binding.divider.visibility = View.GONE
+//        }
+//        binding.btnMyActivities.setOnClickListener {
+//                val action = LoginFragmentDirections.actionLoginFragmentToLoginSuccessFragment()
+//                findNavController(requireView()).navigate(action)
+//        }
+//    }
 }
