@@ -24,7 +24,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Date"
                     app:startIconDrawable="@drawable/ic_date"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    app:startIconTint="#FF5722">
 
                     <AutoCompleteTextView
                         android:id="@+id/tvAutoComplete"

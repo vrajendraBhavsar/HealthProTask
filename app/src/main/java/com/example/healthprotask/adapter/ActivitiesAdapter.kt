@@ -34,11 +34,13 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
     }
 
     class DataViewHolder(private val binding: DataViewBinding) : RecyclerView.ViewHolder(binding.root){
+        private val TAG: String = ActivitiesAdapter::class.java.simpleName
+
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n")
         fun bind(activities: UserActivitiesResponse.Activity){
             when(activities.activityName){
-                "Walk" -> binding.ivActivity.setImageResource(R.drawable.ic_walk)
+                "Walk" -> binding.ivActivity.setImageResource(R.drawable.ic_bicycle)
                 "Bike" -> binding.ivActivity.setImageResource(R.drawable.ic_bicycle)
                 "Swim" -> binding.ivActivity.setImageResource(R.drawable.ic_swimming)
                 "Run" -> binding.ivActivity.setImageResource(R.drawable.ic_run)
@@ -53,8 +55,8 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
             val parsedDate = inputFormat.parse(startTimeDate.toInstant().toString())
             val formattedDate = outputFormat.format(parsedDate)
 
-            Log.d("DATEE", "bind: $formattedDate")
-            Log.d("DATEE", "bind: ${startTimeDate.toInstant()}")
+            Log.d(TAG, "bind: $formattedDate")
+            Log.d(TAG, "bind: ${startTimeDate.toInstant()}")
 
             binding.tvName.text = activities.activityName
             binding.tvStartTime.text = formattedDate
@@ -74,6 +76,16 @@ class ActivitiesAdapter : RecyclerView.Adapter<ActivitiesAdapter.DataViewHolder>
         }
         Log.d(TAG, "notifySuccess: paging list: $list")
 //        activitiesList = dataList.activities
+        notifyDataSetChanged()
+    }
+
+    fun notifyFilterSuccess(dataList: UserActivitiesResponse) {
+//        val list: List<UserActivitiesResponse.Activity> = dataList.activities
+//        for (item in list.indices){
+//            activitiesList.add(list[item])
+//        }
+//        Log.d(TAG, "notifySuccess: paging list: $list")
+        activitiesList = dataList.activities
         notifyDataSetChanged()
     }
 }

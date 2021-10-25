@@ -60,10 +60,13 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        authViewModel.userActivitiesResponseLiveData.observe(
-            viewLifecycleOwner,
-            ::handleUserActivity
-        )
+        authViewModel.userActivitiesResponseLiveData.observe(viewLifecycleOwner, ::handleUserActivity)
+        sessionManager = SessionManager(requireContext())
+        bearerToken = sessionManager.getBearerToken()
+        /**
+         *  date picker
+         **/
+        pickDate()
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
@@ -71,7 +74,11 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             val uri: Uri = Uri.parse(userActivitiesResponse.pagination.next)
             offset = uri.getQueryParameter("offset")
             userActivitiesResponse.let {
-                adapter.notifySuccess(it)
+                if(savedDay == 0){
+                    adapter.notifySuccess(it)
+                }else{
+                    adapter.notifyFilterSuccess(it)
+                }
                 Log.d(TAG, "handleUserActivity: next: ${it.pagination}")
             }
         }
@@ -80,11 +87,7 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     @SuppressLint("SimpleDateFormat")
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_activities_list, container, false)
         binding = FragmentActivitiesListBinding.bind(view)
@@ -97,10 +100,6 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         offset = uri.getQueryParameter("offset")
 
         val date = SimpleDateFormat("yyyy-MM-dd").format(Date())    //to get today's date.
-        /**
-         *  date picker
-         **/
-        pickDate()
 
         adapter = ActivitiesAdapter()    //adapter
         activitiesList?.let { adapter.notifySuccess(it) }  //added list data
@@ -112,7 +111,7 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     //when reaches to last item position
                     //get next page data
                     Log.d(TAG, "onCreateView: bearer-token $bearerToken")
-                    if (activitiesList == null) {
+//                    if (activitiesList == null) {
                         binding.progressBar.visibility = View.VISIBLE
                         offset?.toInt()?.let {
                             bearerToken?.let { bearerToken ->
@@ -127,7 +126,7 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                                 )
                             }
                         }
-                    }
+//                    }
                 }
             }
         })
@@ -144,7 +143,7 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private fun pickDate() {
         binding.tvAutoComplete.setOnClickListener {
-            getDateCalender()
+            getDateCalender()   //to get current day, month and year
             /**
              * date picker dialog
              **/
@@ -152,6 +151,7 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dateOfMonth: Int) {
         savedDay = dateOfMonth
         savedMonth = month
@@ -161,7 +161,7 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         bearerToken?.let {
             authViewModel.getUserActivities(
                 bearerToken = it,
-                "$savedYear-${savedMonth + 1}-${savedDay + 1}",
+                "$savedYear-${savedMonth + 1}-${savedDay + 1}", //savedDay + 1 => cuz Api gives data before selected date ..so to get data of selected date as well
                 sort = "desc",
                 limit = 100,
                 offset = 0,
@@ -169,5 +169,7 @@ class ActivitiesListFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 previous = ""
             )
         }
+        //changing text on filter..
+        binding.tvAutoComplete.setText("$savedYear-${savedMonth + 1}-${savedDay}")
     }
 }
