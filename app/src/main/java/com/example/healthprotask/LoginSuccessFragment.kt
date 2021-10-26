@@ -105,10 +105,15 @@ class LoginSuccessFragment : Fragment() {
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {
-        binding.btnMyActivities.setOnClickListener {
-            userActivitiesResponse?.let { userActivitiesResponse ->
-                val action = LoginSuccessFragmentDirections.actionLoginSuccessFragmentToActivitiesListFragment(userActivitiesResponse = userActivitiesResponse)
-                Navigation.findNavController(requireView()).navigate(action)
+        if (userActivitiesResponse?.success == false){
+            Log.d(TAG, "Login success, user activity response: $userActivitiesResponse")
+            sessionManager.logoutUser()
+        }else{
+            binding.btnMyActivities.setOnClickListener {
+                userActivitiesResponse?.let { userActivitiesResponse ->
+                    val action = LoginSuccessFragmentDirections.actionLoginSuccessFragmentToActivitiesListFragment(userActivitiesResponse = userActivitiesResponse)
+                    Navigation.findNavController(requireView()).navigate(action)
+                }
             }
         }
     }

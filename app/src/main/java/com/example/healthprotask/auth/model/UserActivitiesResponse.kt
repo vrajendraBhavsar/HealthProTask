@@ -6,7 +6,10 @@ import java.io.Serializable
 
 data class UserActivitiesResponse(
     val activities: MutableList<Activity>,
-    val pagination: Pagination
+    val pagination: Pagination,
+    //to handle error case
+    val success: Boolean?,
+    val errors: List<Error>?
 ): Serializable {
     data class Activity(
         val activeDuration: Int,
@@ -48,5 +51,10 @@ data class UserActivitiesResponse(
         val offset: Int,
         val previous: String,
         val sort: String
+    )
+
+    data class Error(
+        val errorType: String?,
+        val message: String?
     )
 }

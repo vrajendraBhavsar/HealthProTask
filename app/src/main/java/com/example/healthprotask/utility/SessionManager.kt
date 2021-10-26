@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.Navigation
-import com.example.healthprotask.R
 import com.example.healthprotask.auth.AuthActivity
 import javax.inject.Inject
 
@@ -71,6 +68,7 @@ class SessionManager @Inject constructor() {
      * */
     fun logoutUser(){
         editor.remove(getBearerToken())
+        editor.putBoolean(IS_LOGIN, false)
         editor.clear()
         editor.commit()
 
