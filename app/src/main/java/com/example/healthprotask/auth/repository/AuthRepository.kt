@@ -11,7 +11,7 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 import javax.inject.Inject
 
-class AuthRepository @Inject constructor(private val authApiService: AuthApiService) {
+open class AuthRepository @Inject constructor(private val authApiService: AuthApiService) {
     val TAG = AuthRepository::class.java.simpleName
     
     suspend fun requestToken(
