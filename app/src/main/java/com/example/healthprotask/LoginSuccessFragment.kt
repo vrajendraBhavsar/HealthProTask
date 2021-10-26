@@ -91,6 +91,7 @@ class LoginSuccessFragment : Fragment() {
 //            }
         }
         binding.btnLogout.setOnClickListener {
+            Log.d(TAG, "logout: $bearerToken")
             sessionManager.logoutUser()
         }
         return view

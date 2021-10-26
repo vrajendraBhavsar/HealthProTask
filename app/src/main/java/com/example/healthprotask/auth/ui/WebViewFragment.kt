@@ -41,10 +41,11 @@ class WebViewFragment : Fragment() {
     private var refreshToken: String? = null
     lateinit var binding: FragmentWebViewBinding
     private val TAG = WebViewFragment::class.java.simpleName
-    private val url =
-        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
+//    private val url =
+//        "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800&requestCredentials=true"
 //    private val url = "https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23BKYF&redirect_uri=https%3A%2F%2Fwww.mindinventory.com%2F&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800"
-
+    //used Logout url ,cuz with authorization link, it was graying allow button from consent page on second attempt.
+    private val url = "https://www.fitbit.com/logout?disableThirdPartyLogin=true&redirect=%2Foauth2%2Fauthorize%3Fclient_id%3D23BKYF%26redirect_uri%3Dhttps%253A%252F%252Fwww.mindinventory.com%252F%26response_type%3Dcode%26scope%3Dactivity%2Bheartrate%2Blocation%2Bnutrition%2Bprofile%2Bsettings%2Bsleep%2Bsocial%2Bweight%26state&requestCredentials=true"
     @Inject
     lateinit var sessionManager: SessionManager //to handle session..
 
@@ -165,7 +166,7 @@ class WebViewFragment : Fragment() {
         binding.wbWebView.settings.userAgentString = "Chrome/94.0.4606.71 Mobile"   //to avoid possible errors from occurring in latest versions
         binding.wbWebView.clearCache(true)
         binding.wbWebView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
-            binding.wbWebView.loadUrl(url)
+        binding.wbWebView.loadUrl(url)
     }
 
     private fun handleUserActivity(userActivitiesResponse: UserActivitiesResponse?) {   //get : user data
