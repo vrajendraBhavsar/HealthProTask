@@ -23,7 +23,8 @@ import org.mockito.MockitoAnnotations
 open class GetDistanceApiCallUnitTest {
 
     @ExperimentalCoroutinesApi
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = TestCoroutineDispatcher()  //use this when you are testing suspend class or coroutine.
+//1. mock creation
     @InjectMocks
     private lateinit var authRepository: AuthRepository
     @Mock
@@ -42,7 +43,7 @@ open class GetDistanceApiCallUnitTest {
     @Test
     fun fetchUserData()  {
         runBlocking {
-            //
+            //created dummy model
             val distanceResponse =  DistanceResponse(
                 activitiesDistance = mutableListOf(
                     DistanceResponse.ActivitiesDistance("12Nov", "123"),
@@ -50,11 +51,13 @@ open class GetDistanceApiCallUnitTest {
                     DistanceResponse.ActivitiesDistance("2Mar", "923"),
                     DistanceResponse.ActivitiesDistance("28Feb", "1230"),
                 ))
-
-            authRepository.getDistance("BearerToken abc!23XYZ", "23-12-2021")
-            `when`(authApiService.getDistance("BearerToken abc!23XYZ", "23-12-2021")).thenReturn(distanceResponse)
-
-            Mockito.verify(authApiService).getDistance("BearerToken abc!23XYZ", "23-12-2021")
+//2. action on mock object
+            //repository obj
+            authRepositoryMock.getDistance("BearerToken abc!23XYZ", "23-12-2021")
+            //stubbed method =>
+            `when`(authRepositoryMock.getDistance("BearerToken abc!23XYZ", "23-12-2020")).thenReturn(distanceResponse)
+//3. verification
+            Mockito.verify(authRepositoryMock).getDistance("BearerToken abc!23XYZ", "23-12-2021")
         }
     }
 
