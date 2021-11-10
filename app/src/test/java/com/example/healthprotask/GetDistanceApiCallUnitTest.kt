@@ -43,7 +43,7 @@ open class GetDistanceApiCallUnitTest {
     @Test
     fun fetchUserData()  {
         runBlocking {
-            //created dummy model
+//2. created dummy model to get in response,
             val distanceResponse =  DistanceResponse(
                 activitiesDistance = mutableListOf(
                     DistanceResponse.ActivitiesDistance("12Nov", "123"),
